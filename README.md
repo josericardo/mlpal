@@ -31,7 +31,6 @@ The tasks that are already supported:
 
 - [ ] Add some reasonable documentation to readthedocs
 - [ ] Add required dependencies to the packaged version
-- [ ] Make the build process run on travis-ci
 - [ ] Use coveralls
 - [ ] Improve test suite (define a desired coverage)
 - [ ] Add default classifiers that can be selected via command line
