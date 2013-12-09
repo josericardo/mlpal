@@ -27,19 +27,6 @@ The tasks that are already supported:
 * plot_pca
 * misclassified
 
-## Wishlist
-
-- [ ] Add some reasonable documentation to readthedocs
-- [ ] Add required dependencies to the packaged version
-- [ ] Use coveralls
-- [ ] Improve test suite (define a desired coverage)
-- [ ] Add default classifiers that can be selected via command line
-- [ ] Enable the definition of params via CLI and config.json
-- [ ] One configuration per project/module
-- [ ] One output dir per project/module
-- [ ] Most things work only for the binary classification case.
-- [ ] Isolated tests (today they read the config.json file)
-
 ## Similar projects
 
 You may also want to take a look at these projects:
