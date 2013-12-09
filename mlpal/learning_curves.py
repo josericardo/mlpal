@@ -40,19 +40,19 @@ def fit(spec, X, y, train, test, i, j):
     clf.fit(X_train, y_train)
     return f1_score(y_train, clf.predict(X_train)), f1_score(y_test, clf.predict(X_test))
 
-def plot_lcs(spec, X, y, args, X_test=None, y_test=None, n_iter=5):
+def plot_lcs(spec, X, y, args, X_test=None, y_test=None):
     train_sizes = train_sizes_from(len(X), args)
-    train_scores = np.zeros((train_sizes.shape[0], n_iter), dtype=np.float)
-    test_scores = np.zeros((train_sizes.shape[0], n_iter), dtype=np.float)
+    train_scores = np.zeros((train_sizes.shape[0], args.cv), dtype=np.float)
+    test_scores = np.zeros((train_sizes.shape[0], args.cv), dtype=np.float)
     clfs = {}
 
     len_of_max_train_size_number = len(str(train_sizes[-1]))
 
     out = ''
     for i, train_size in enumerate(train_sizes):
-        cv = ShuffleSplit(train_size, n_iter=n_iter)
+        cv = ShuffleSplit(train_size, n_iter=args.cv)
 
-        i_scores = Parallel(n_jobs=n_iter, pre_dispatch=1, verbose=1)(
+        i_scores = Parallel(n_jobs=args.j, pre_dispatch=1, verbose=1)(
                 delayed(fit)
                 (spec, X, y, train, test, i, j)
                 for j, (train, test) in enumerate(cv)
