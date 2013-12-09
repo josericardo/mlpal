@@ -5,7 +5,7 @@ import os
 from utils import exit_code_of
 
 def mlpal(task, params=''):
-    return "bin/mlpal %s mlpal.tests.dummy_setup %s" % (task, params)
+    return "bin/mlpal --tests %s mlpal.tests.dummy_setup %s" % (task, params)
 
 class RunTargetsSmokeTest(unittest.TestCase):
     def test_run_targets_smoke_test(self):

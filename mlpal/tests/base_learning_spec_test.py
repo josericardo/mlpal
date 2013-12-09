@@ -24,5 +24,5 @@ class LearningSpec(BaseLearningSpec):
 
 class BaseLearningSpecTest(unittest.TestCase):
     def test_LearningSpec_can_relly_on_BaseLearningSpec(self):
-        self.assertEqual(None, exit_code_of('bin/mlpal train mlpal.tests.base_learning_spec_test'), "make train is failing")
-        self.assertEqual(None, exit_code_of('bin/mlpal search mlpal.tests.base_learning_spec_test'), "make search is failing")
+        self.assertEqual(None, exit_code_of('bin/mlpal --tests train mlpal.tests.base_learning_spec_test'), "make train is failing")
+        self.assertEqual(None, exit_code_of('bin/mlpal --tests search mlpal.tests.base_learning_spec_test'), "make search is failing")
