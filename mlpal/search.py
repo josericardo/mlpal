@@ -6,8 +6,8 @@ from sklearn.cross_validation import StratifiedShuffleSplit
 from sklearn.grid_search import GridSearchCV
 
 class Searcher(Trainer):
-    def __init__(self, config, data_source):
-        self.log = config.logger_for(self.__class__.__name__)
+    def __init__(self, config, loggers_factory, data_source):
+        self.log = loggers_factory.logger_for(self.__class__.__name__)
         self.config = config
         self.ds = data_source
 
@@ -24,8 +24,8 @@ class Searcher(Trainer):
 
     def fit_pipeline(self, pipeline, parameters):
         X_train, y_train = self.ds.train_data()
-        cv = StratifiedShuffleSplit(y_train, n_iter=8)
-        grid = GridSearchCV(pipeline, parameters, n_jobs=self.config.n_jobs, verbose=1, cv=cv)
+        cv = StratifiedShuffleSplit(y_train, n_iter=self.config.cv, random_state=self.config.random_state)
+        grid = GridSearchCV(pipeline, parameters, n_jobs=self.config.j, verbose=1, cv=cv)
 
         grid.fit(X_train, y_train)
         dump_path = self.save(grid)

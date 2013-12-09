@@ -33,7 +33,7 @@ def run(args):
         trainer = Trainer(Config({}), data_source, spec.training_classifier())
         trainer.run()
     elif task == 'search':
-        searcher = Searcher(Config({}), data_source)
+        searcher = Searcher(args, Config({}), data_source)
         searcher.fit(spec.gridsearch_pipelines())
     elif task == 'benchmark':
         run_benchmarks(args, data_source)
