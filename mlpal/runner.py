@@ -6,6 +6,7 @@ import pickle
 from train import Trainer
 from search import Searcher
 from benchmark import Benchmarker
+from misclassified import print_misclassified
 from learning_curves import plot_lcs
 from pca import plot_pca
 from importlib import import_module
@@ -41,3 +42,5 @@ def run(args):
     elif task == 'plot_pca':
         X, y = data_source.train_data()
         plot_pca(X, y)
+    elif task == 'misclassified':
+        print_misclassified(args, spec.training_classifier(), data_source)

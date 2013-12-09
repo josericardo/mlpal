@@ -5,7 +5,9 @@ import sys
 import os
 
 def parse_args():
-    tasks = ['train', 'search', 'benchmark', 'learning_curves', 'plot_pca']
+    tasks = ['train', 'search', 'benchmark',
+             'learning_curves', 'plot_pca', 'misclassified']
+
     parser = argparse.ArgumentParser()
     parser.add_argument("task", help="The task to be run", choices=tasks)
     parser.add_argument("setup", help="Python module with the running definitions")
