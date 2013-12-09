@@ -1,5 +1,4 @@
-mlpal
-=====
+# Machine Learning Pal
 
 A lightweight toolkit to help you on common Machine Learning tasks.
 Implement two interfaces and start experimenting.
