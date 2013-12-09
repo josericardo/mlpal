@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/gendoc/mlpal.png)](https://travis-ci.org/gendoc/mlpal)
+
 # Machine Learning Pal
 
 A lightweight toolkit to help you on common Machine Learning tasks.
