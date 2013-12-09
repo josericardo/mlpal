@@ -14,7 +14,7 @@ class RunTargetsSmokeTest(unittest.TestCase):
         self.assertEqual(None, exit_code_of(mlpal('train')), "train is failing")
 
     def test_search_is_ok(self):
-        self.assertEqual(None, exit_code_of(mlpal('search')), "search is failing")
+        self.assertEqual(None, exit_code_of(mlpal('search --cv=3 -j 2 --random-state=42')), "search is failing")
 
     def test_plot_pca_is_ok(self):
         self.assertEqual(None, exit_code_of(mlpal('plot_pca')), "plot_pca is failing")
