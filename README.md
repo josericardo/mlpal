@@ -25,6 +25,7 @@ The tasks that are already supported:
 * benchmark
 * learning_curves
 * plot_pca
+* misclassified
 
 ## Wishlist
 
