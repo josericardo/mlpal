@@ -26,7 +26,6 @@ class ConfusionMatrix:
                 "False negatives: {} ({:.2f}% of all predicted as 0)".format(false_neg, per_fn)
         ]
 
-        print result
         return result
 
     def as_str(self):
