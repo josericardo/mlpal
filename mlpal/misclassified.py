@@ -36,8 +36,9 @@ def print_misclassified(config, clf, data_source):
     errors = find_errors(clf, X, y, sss)
     false_pos, false_neg = errors[(0, 1)], errors[(1, 0)]
 
-    print("Dumping misclassifications..."),
-    pickle.dump(errors, open('misclassifications.pickle', 'wb'))
+    dump_path = 'misclassifications.pickle'
+    print("Dumping misclassifications to %s..." % dump_path),
+    pickle.dump(errors, open(dump_path, 'wb'))
     print("done.")
 
     _print({'id': 'FN', 'class': 'False Negatives', 'X': false_neg})
