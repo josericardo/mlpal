@@ -2,12 +2,8 @@
 # encoding: utf-8
 
 from sklearn.cross_validation import StratifiedShuffleSplit
+import pickle
 
-# IMPORTANT run this on the training set
-
-# The evaluation must be on the cross validation set
-# cross-validate and build a set with the unique
-# examples that were misclassified
 def find_errors(clf, X, y, splits):
     false_positives = []
     false_negatives = []
@@ -40,8 +36,9 @@ def print_misclassified(config, clf, data_source):
     errors = find_errors(clf, X, y, sss)
     false_pos, false_neg = errors[(0, 1)], errors[(1, 0)]
 
-    print("%d false negatives: " % len(false_neg))
-    print(false_neg)
+    print("Dumping misclassifications..."),
+    pickle.dump(errors, open('misclassifications.pickle', 'wb'))
+    print("done.")
 
     _print({'id': 'FN', 'class': 'False Negatives', 'X': false_neg})
     _print({'id': 'FP', 'class': 'False Positives', 'X': false_pos})
