@@ -20,7 +20,7 @@ def run_benchmarks(args, data_source):
     print("Loading classifier: %s" % args.clfpath)
     classifier = pickle.load(open(args.clfpath, "rb"))
     config = Config({'log_file': 'benchmark.log'})
-    benchmarker = Benchmarker(config, data_source, classifier)
+    benchmarker = Benchmarker(args, config, data_source, classifier)
     benchmarker.run()
 
 def run(args):
@@ -30,7 +30,7 @@ def run(args):
     spec = setup.LearningSpec()
 
     if task == 'train':
-        trainer = Trainer(Config({}), data_source, spec.training_classifier())
+        trainer = Trainer(args, Config({}), data_source, spec.training_classifier())
         trainer.run()
     elif task == 'search':
         searcher = Searcher(args, Config({}), data_source)

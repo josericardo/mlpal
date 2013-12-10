@@ -16,17 +16,18 @@ def benchmark(benchmarker, test_slice):
         (start, end) = test_slice
         X_test, y_test = benchmarker.ds.testing_slice(start, end)
         clf = copy.deepcopy(benchmarker.clf)
-        trainer = Trainer(benchmarker.config, benchmarker.ds, clf)
+        trainer = Trainer(benchmarker.config, benchmarker.logger_factory, benchmarker.ds, clf)
         return trainer.benchmark(X_test, y_test)
     except Exception as e:
         print(e)
         traceback.print_exc()
 
 class Benchmarker:
-    def __init__(self, config, ds, classifier):
+    def __init__(self, config, logger_factory, ds, classifier):
         self.ds = ds
         self.clf = classifier
-        self.log = config.logger_for(self.__class__.__name__)
+        self.logger_factory = logger_factory
+        self.log = logger_factory.logger_for(self.__class__.__name__)
         self.config = config
 
     def run(self):
@@ -36,7 +37,7 @@ class Benchmarker:
 
         print("Benchmarking classifier over %d examples in %d chunks." % (test_size, num_of_chunks))
 
-        cms = Parallel(n_jobs=self.config.n_jobs, verbose=1)(delayed(benchmark)(self, i) for i in test_subsets)
+        cms = Parallel(n_jobs=self.config.j, verbose=1)(delayed(benchmark)(self, i) for i in test_subsets)
 
         final_confusion_matrix = [[0,0], [0,0]]
 
