@@ -7,11 +7,9 @@ from joblib import Parallel, delayed
 from train import Trainer
 from log_utils import log_confusion_matrix
 
-def slices(length, wanted_parts=1):
-    return [(i*length // wanted_parts, (i+1)*length // wanted_parts)
-            for i in range(wanted_parts)]
-
-def benchmark(benchmarker, test_slice):
+# joblib only works with functions
+def _benchmark(benchmarker, test_slice):
+    """Benchmarks the classifier based on a test set slice"""
     try:
         (start, end) = test_slice
         X_test, y_test = benchmarker.ds.testing_slice(start, end)
@@ -23,6 +21,8 @@ def benchmark(benchmarker, test_slice):
         traceback.print_exc()
 
 class Benchmarker:
+    """Slices the test set and generates the final confusion matrix"""
+
     def __init__(self, config, logger_factory, ds, classifier):
         self.ds = ds
         self.clf = classifier
@@ -32,13 +32,19 @@ class Benchmarker:
 
     def run(self):
         test_size = self.ds.get_test_size()
-        num_of_chunks = int(math.ceil(test_size/70000.0)) # 70k is good enough
-        test_subsets = slices(test_size, wanted_parts=num_of_chunks)
+        num_of_chunks = int(math.ceil(test_size/70000.0)) # is 70k good enough?
+        test_subsets = self.slices(test_size, wanted_parts=num_of_chunks)
 
         print("Benchmarking classifier over %d examples in %d chunks." % (test_size, num_of_chunks))
 
-        cms = Parallel(n_jobs=self.config.j, verbose=1)(delayed(benchmark)(self, i) for i in test_subsets)
+        cms = Parallel(n_jobs=self.config.j, verbose=1)(delayed(_benchmark)(self, i) for i in test_subsets)
+        self.log_final_confusion_matrix(cms)
 
+    def slices(self, length, wanted_parts=1):
+        return [(i*length // wanted_parts, (i+1)*length // wanted_parts)
+                for i in range(wanted_parts)]
+
+    def log_final_confusion_matrix(self, cms):
         final_confusion_matrix = [[0,0], [0,0]]
 
         for cm in cms:

@@ -10,3 +10,5 @@ config.json
 dumps/**
 *.png
 *.scores
+.coverage
+htmlcov
