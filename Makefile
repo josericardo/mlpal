@@ -16,3 +16,6 @@ source_up:
 	git pull origin master
 
 up: source_up lup
+
+todos:
+	grep -r --include="*.py" "TODO" .
