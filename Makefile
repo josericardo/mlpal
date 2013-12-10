@@ -15,4 +15,8 @@ install:
 source_up:
 	git pull origin master
 
+test-coverage:
+	rm -rf .coverage coverage
+	nosetests -s -v --with-coverage
+
 up: source_up lup
