@@ -3,6 +3,9 @@
 
 from sklearn.cross_validation import StratifiedShuffleSplit
 import pickle
+import os
+
+_DUMP_PATH = 'misclassifications.pickle'
 
 def find_errors(clf, X, y, splits):
     false_positives = []
@@ -29,17 +32,37 @@ def _print(data):
     for x in data['X']:
         print("%s | %s\n============\n" % (data['id'], x[0]))
 
-def print_misclassified(config, clf, data_source):
-    X, y = data_source.train_data()
-
-    sss = StratifiedShuffleSplit(y, n_iter=config.cv)
-    errors = find_errors(clf, X, y, sss)
+def _print_errors(errors):
     false_pos, false_neg = errors[(0, 1)], errors[(1, 0)]
-
-    dump_path = 'misclassifications.pickle'
-    print("Dumping misclassifications to %s..." % dump_path),
-    pickle.dump(errors, open(dump_path, 'wb'))
-    print("done.")
 
     _print({'id': 'FN', 'class': 'False Negatives', 'X': false_neg})
     _print({'id': 'FP', 'class': 'False Positives', 'X': false_pos})
+
+def _load_previous_classification(config):
+    if config.f:
+        return None
+
+    if os.path.isfile(_DUMP_PATH):
+        print("Previous data was found. Loading %s" % _DUMP_PATH)
+        return pickle.load(_DUMP_PATH)
+
+    print("No previous data found. Generating.")
+
+def print_misclassified(config, clf, data_source):
+    errors = _load_previous_classification(config)
+
+    if not errors:
+        errors = classify(config, clf, data_source)
+
+    _print_errors(errors)
+
+def classify(config, clf, data_source):
+    X, y = data_source.train_data()
+    sss = StratifiedShuffleSplit(y, n_iter=config.cv)
+    errors = find_errors(clf, X, y, sss)
+
+    print("Dumping misclassifications to %s..." % _DUMP_PATH),
+    pickle.dump(errors, open(_DUMP_PATH, 'wb'))
+    print("done.")
+
+    return errors
