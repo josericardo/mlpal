@@ -20,6 +20,7 @@ class BaseDataSource:
     def train_data(self):
         return self._X_and_y(self.raw_train())
 
+    # TODO remove, we use only cross-validation by now
     def validation_data(self):
         return self._X_and_y(self.raw_validation())
 

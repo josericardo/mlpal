@@ -6,6 +6,7 @@ import math
 from joblib import Parallel, delayed
 from train import Trainer
 from log_utils import log_confusion_matrix
+import logger_factory
 
 # joblib only works with functions
 def _benchmark(benchmarker, test_slice):
@@ -14,7 +15,7 @@ def _benchmark(benchmarker, test_slice):
         (start, end) = test_slice
         X_test, y_test = benchmarker.ds.testing_slice(start, end)
         clf = copy.deepcopy(benchmarker.clf)
-        trainer = Trainer(benchmarker.config, benchmarker.logger_factory, benchmarker.ds, clf)
+        trainer = Trainer(benchmarker.config, benchmarker.ds, clf)
         return trainer.benchmark(X_test, y_test)
     except Exception as e:
         print(e)
@@ -23,11 +24,11 @@ def _benchmark(benchmarker, test_slice):
 class Benchmarker:
     """Slices the test set and generates the final confusion matrix"""
 
-    def __init__(self, config, logger_factory, ds, classifier):
+    def __init__(self, config, ds, classifier):
         self.ds = ds
         self.clf = classifier
         self.logger_factory = logger_factory
-        self.log = logger_factory.logger_for(self.__class__.__name__)
+        self.log = logger_factory.logger_for(config, self.__class__.__name__)
         self.config = config
 
     def run(self):

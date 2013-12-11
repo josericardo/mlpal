@@ -32,4 +32,4 @@ class MisclassifiedTest(unittest.TestCase):
         clf = FakeClf(0)
         fpos, fneg = find_errors(clf, X, y, folds)
         self.assertEquals(0, len(fpos)) # clf always predicts as 0
-        self.assertTrue(np.array_equal(fneg, [[0, 1], [2, 3]])/\s\+$//e
+        self.assertTrue(np.array_equal(fneg, [[0, 1], [2, 3]]))

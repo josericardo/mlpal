@@ -11,7 +11,7 @@ Implement two interfaces and start experimenting.
 
 ### Define a learning setup
 
-For mlpal to work, you must define set module, that will contain two classes:
+For mlpal to work, you must define a setup module, that will contain two classes:
 
 - DataSource
 - LearningSpec
@@ -27,6 +27,8 @@ The tasks that are already supported:
 * plot_pca
 * misclassified
 
+Most command line parameters can have their default value defined in the
+config.yaml file.
 
 ## Contributing
 
