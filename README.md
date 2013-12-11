@@ -27,6 +27,9 @@ The tasks that are already supported:
 * plot_pca
 * misclassified
 
+Most command line parameters can have their default value defined in the
+config.yaml file.
+
 ## Contributing
 
 Random acts of kindness are more than welcome. Besides the Github issues,
