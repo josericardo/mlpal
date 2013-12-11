@@ -3,6 +3,7 @@
 import unittest
 import numpy as np
 from ..misclassified import find_errors
+from utils import run_mlpal
 from sklearn.cross_validation import KFold
 from sklearn.dummy import DummyClassifier
 
@@ -24,12 +25,18 @@ class FakeClf:
 class MisclassifiedTest(unittest.TestCase):
     def test_false_positives_are_found(self):
         clf = FakeClf(1)
-        fpos, fneg = find_errors(clf, X, y, folds)
+        errors = find_errors(clf, X, y, folds)
+        fpos, fneg = errors[(0, 1)], errors[(1, 0)]
         self.assertEquals(0, len(fneg)) # clf always predicts as 1
         self.assertTrue(np.array_equal(fpos, [[4, 5], [6, 7]]))
 
     def test_false_negatives_are_found(self):
         clf = FakeClf(0)
-        fpos, fneg = find_errors(clf, X, y, folds)
+        errors = find_errors(clf, X, y, folds)
+        fpos, fneg = errors[(0, 1)], errors[(1, 0)]
         self.assertEquals(0, len(fpos)) # clf always predicts as 0
         self.assertTrue(np.array_equal(fneg, [[0, 1], [2, 3]]))
+
+    def test_misclassified_task_is_ok(self):
+        self.assertEqual(None, run_mlpal('misclassified -f --cv=2'), "misclassified task with force is failing")
+        self.assertEqual(None, run_mlpal('misclassified --cv=2'), "misclassified task without force is failing")

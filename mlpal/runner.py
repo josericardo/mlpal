@@ -25,6 +25,7 @@ def run_benchmarks(args, data_source):
     benchmarker.run()
 
 def run(args):
+    # TODO update args according to config.json here
     setup = import_module(args.setup)
     task = args.task
     data_source = setup.DataSource(args)
