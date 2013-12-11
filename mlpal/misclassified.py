@@ -2,6 +2,7 @@
 # encoding: utf-8
 
 from sklearn.cross_validation import StratifiedShuffleSplit
+import joblib
 import pickle
 import os
 
@@ -44,7 +45,7 @@ def _load_previous_classification(config):
 
     if os.path.isfile(_DUMP_PATH):
         print("Previous data was found. Loading %s" % _DUMP_PATH)
-        return pickle.load(open(_DUMP_PATH))
+        return joblib.load(_DUMP_PATH)
 
     print("No previous data found. Generating.")
 

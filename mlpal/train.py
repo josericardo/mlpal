@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 
-import pickle
 import os
+import joblib
 import numpy as np
-
 from datetime import datetime
 from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
@@ -62,21 +61,10 @@ class Trainer:
         return cm
 
     def save(self, clf):
-        now = datetime.now().strftime("%Y%m%dat%H%M%S")
-        return self.dump('clf', now, clf)
-
-    def dump(self, kind, sufix, obj):
         if not os.path.isdir('dumps'):
             os.makedirs('dumps')
 
-        dump = "%s%s.pickle" % (kind, sufix)
-
-        self.log.info("Saving %s to %s..." % (kind, dump))
-        with open("dumps/%s" % dump, 'wb') as f:
-            pickle.dump(obj, f)
-
-        self.log.info("Linking as the last dump")
-        if os.path.isfile("dumps/last.pickle"):
-            os.unlink('dumps/last.pickle')
-        os.symlink(dump, 'dumps/last.pickle')
+        dump = "dumps/last.pickle"
+        self.log.info("Saving classifier to %s..." % dump)
+        joblib.dump(clf, dump)
         return dump
