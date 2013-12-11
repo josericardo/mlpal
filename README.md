@@ -5,7 +5,7 @@
 A lightweight toolkit to help you on common Machine Learning tasks.
 Implement two interfaces and start experimenting.
 
-*Warning*: this project is still in a very alpha stage.
+*Warning*: this project is still in a __very alpha__ stage.
 
 ## Usage
 
