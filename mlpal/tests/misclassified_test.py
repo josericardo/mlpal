@@ -38,4 +38,5 @@ class MisclassifiedTest(unittest.TestCase):
         self.assertTrue(np.array_equal(fneg, [[0, 1], [2, 3]]))
 
     def test_misclassified_task_is_ok(self):
-        self.assertEqual(None, run_mlpal('misclassified -f --cv=3'), "misclassified task is failing")
+        self.assertEqual(None, run_mlpal('misclassified -f --cv=2'), "misclassified task with force is failing")
+        self.assertEqual(None, run_mlpal('misclassified --cv=2'), "misclassified task without force is failing")
