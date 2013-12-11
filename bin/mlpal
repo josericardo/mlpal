@@ -33,6 +33,7 @@ def parse_args(config):
     parser.add_argument("-n", help="Sample size", type=int, default=defaults['n'])
     parser.add_argument("-j", help="# of jobs", type=int, default=defaults.get('j', 1))
     parser.add_argument("-o", help="Output files prefix.", type=str, default=defaults['o'])
+    parser.add_argument("-f", help="Force", action='store_true')
     parser.add_argument("-q", help="Less verbosity on STDOUT",
         action='store_true', default=defaults.get('q', False))
 
