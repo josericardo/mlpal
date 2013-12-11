@@ -27,8 +27,8 @@ Using:
 
 For mlpal to work, you must define a setup module, that will contain two classes:
 
-- DataSource
-- LearningSpec
+- `DataSource`
+- `LearningSpec`
 
 A working example of setup file is the `tests/dummy_setup.py`.
 
@@ -42,14 +42,14 @@ The tasks that are already supported:
 * misclassified
 
 Most command line parameters can have their default value defined in the
-config.yaml file.
+`config.yaml` file.
 
 ## Contributing
 
 Random acts of kindness are more than welcome. Besides the Github issues,
 known smells in the code can be listed via:
 
-$ make todos
+`$ make todos`
 
 ## Similar projects
 
