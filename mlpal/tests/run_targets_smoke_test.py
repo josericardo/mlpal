@@ -2,12 +2,7 @@
 
 import unittest
 import os
-from utils import exit_code_of
-
-def mlpal(task):
-    cmd = "bin/mlpal --tests %s mlpal.tests.dummy_setup" % (task)
-    print("\nRunning: %s" % cmd)
-    return cmd
+from utils import exit_code_of, mlpal
 
 class RunTargetsSmokeTest(unittest.TestCase):
     def test_train_is_ok(self):
@@ -20,11 +15,9 @@ class RunTargetsSmokeTest(unittest.TestCase):
         self.assertEqual(None, exit_code_of(mlpal('plot_pca')), "plot_pca is failing")
 
     def test_learning_curves_is_ok(self):
-        self.assertEqual(None, exit_code_of(mlpal('learning_curves -n=100 --cv=2')), "learning_curves is failing")
+        self.assertEqual(None, exit_code_of(mlpal('learning_curves -n=100 --cv=2 --points=2')), "learning_curves is failing")
 
     def test_benchmark_is_ok(self):
         self.assertEqual(None, exit_code_of(mlpal('train')), "train is failing")
         self.assertEqual(None, exit_code_of(mlpal('benchmark --clfpath=dumps/last.pickle')), "benchmark is failing")
 
-    def test_misclassified_is_ok(self):
-        self.assertEqual(None, exit_code_of(mlpal('misclassified --cv=3')), "misclassified is failing")

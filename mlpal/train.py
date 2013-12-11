@@ -10,19 +10,21 @@ from sklearn.metrics import confusion_matrix
 from sklearn import cross_validation
 
 from log_utils import log_confusion_matrix
+import logger_factory
 
 class Trainer:
     def __init__(self, config, data_source, classifier):
-        """ 
+        """
         Params
         ------
-        config: a Config object
+        config: args
         data_source: a BaseDataSource
         classifier: a scikit-learn classifier
         """
-        self.log = config.logger_for(self.__class__.__name__)
+        self.log = logger_factory.logger_for(config, self.__class__.__name__)
         self.classifier = classifier
         self.ds = data_source
+        self.config = config
 
     def run(self):
         self.log.info("Extracting features and labels for training")
@@ -34,7 +36,7 @@ class Trainer:
         self.log.info("Training evaluation")
         self.classify_and_report(self.classifier, X_train, y_train)
 
-        scores = cross_validation.cross_val_score(self.classifier, X_train, y_train, cv=5, scoring='f1')
+        scores = cross_validation.cross_val_score(self.classifier, X_train, y_train, cv=self.config.cv, scoring='f1')
 
         self.log.info("Cross-Validation score: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
         #self.log.info("= Validation reports =")

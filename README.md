@@ -9,9 +9,23 @@ Implement two interfaces and start experimenting.
 
 ## Usage
 
+### Running
+
+To install the package locally:
+
+$ make install
+
+Using:
+
+$ mlpal --help
+
+#### Uninstalling
+
+$ make uninstall
+
 ### Define a learning setup
 
-For mlpal to work, you must define set module, that will contain two classes:
+For mlpal to work, you must define a setup module, that will contain two classes:
 
 - DataSource
 - LearningSpec
@@ -26,6 +40,16 @@ The tasks that are already supported:
 * learning_curves
 * plot_pca
 * misclassified
+
+Most command line parameters can have their default value defined in the
+config.yaml file.
+
+## Contributing
+
+Random acts of kindness are more than welcome. Besides the Github issues,
+known smells in the code can be listed via:
+
+$ make todos
 
 ## Similar projects
 

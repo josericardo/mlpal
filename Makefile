@@ -1,5 +1,6 @@
 test:
 	 nosetests -s -v $(TEST)
+	 rm *.scores *.png *.log
 
 # local update
 lup: uninstall install 
@@ -16,3 +17,6 @@ source_up:
 	git pull origin master
 
 up: source_up lup
+
+todos:
+	grep -r --include="*.py" "TODO" .

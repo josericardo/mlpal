@@ -4,10 +4,11 @@ from train import Trainer
 from config import Config
 from sklearn.cross_validation import StratifiedShuffleSplit
 from sklearn.grid_search import GridSearchCV
+import logger_factory
 
 class Searcher(Trainer):
-    def __init__(self, config, loggers_factory, data_source):
-        self.log = loggers_factory.logger_for(self.__class__.__name__)
+    def __init__(self, config, data_source):
+        self.log = logger_factory.logger_for(config, self.__class__.__name__)
         self.config = config
         self.ds = data_source
 

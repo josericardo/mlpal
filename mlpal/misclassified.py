@@ -2,12 +2,11 @@
 # encoding: utf-8
 
 from sklearn.cross_validation import StratifiedShuffleSplit
+import pickle
+import os
 
-# IMPORTANT run this on the training set
+_DUMP_PATH = 'misclassifications.pickle'
 
-# The evaluation must be on the cross validation set
-# cross-validate and build a set with the unique
-# examples that were misclassified
 def find_errors(clf, X, y, splits):
     false_positives = []
     false_negatives = []
@@ -25,16 +24,45 @@ def find_errors(clf, X, y, splits):
             elif y_pred[i] == 1 and y_test[i] == 0:
                 false_positives.append(x)
 
-    return false_positives, false_negatives
+    return {(0, 1): false_positives, (1, 0): false_negatives}
+
+def _print(data):
+    print("%d %s" % (len(data['X']), data['class']))
+
+    for x in data['X']:
+        print("%s | %s\n============\n" % (data['id'], x[0]))
+
+def _print_errors(errors):
+    false_pos, false_neg = errors[(0, 1)], errors[(1, 0)]
+
+    _print({'id': 'FN', 'class': 'False Negatives', 'X': false_neg})
+    _print({'id': 'FP', 'class': 'False Positives', 'X': false_pos})
+
+def _load_previous_classification(config):
+    if config.f:
+        return None
+
+    if os.path.isfile(_DUMP_PATH):
+        print("Previous data was found. Loading %s" % _DUMP_PATH)
+        return pickle.load(open(_DUMP_PATH))
+
+    print("No previous data found. Generating.")
 
 def print_misclassified(config, clf, data_source):
+    errors = _load_previous_classification(config)
+
+    if not errors:
+        errors = classify(config, clf, data_source)
+
+    _print_errors(errors)
+
+def classify(config, clf, data_source):
     X, y = data_source.train_data()
-
     sss = StratifiedShuffleSplit(y, n_iter=config.cv)
-    false_pos, false_neg = find_errors(clf, X, y, sss)
+    errors = find_errors(clf, X, y, sss)
 
-    print("%d false negatives: " % len(false_neg))
-    print(false_neg)
+    print("Dumping misclassifications to %s..." % _DUMP_PATH),
+    pickle.dump(errors, open(_DUMP_PATH, 'wb'))
+    print("done.")
 
-    print("%d false positives: " % len(false_pos))
-    print(false_pos)
+    return errors
