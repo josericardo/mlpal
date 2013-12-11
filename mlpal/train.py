@@ -10,18 +10,18 @@ from sklearn.metrics import confusion_matrix
 from sklearn import cross_validation
 
 from log_utils import log_confusion_matrix
+import logger_factory
 
 class Trainer:
-    def __init__(self, config, logs_factory, data_source, classifier):
+    def __init__(self, config, data_source, classifier):
         """
         Params
         ------
         config: args
-        logs_factory: implements #logger_for
         data_source: a BaseDataSource
         classifier: a scikit-learn classifier
         """
-        self.log = logs_factory.logger_for(self.__class__.__name__)
+        self.log = logger_factory.logger_for(config, self.__class__.__name__)
         self.classifier = classifier
         self.ds = data_source
         self.config = config

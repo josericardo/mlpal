@@ -19,8 +19,9 @@ def run_learning_curves(args, spec, data_source):
 def run_benchmarks(args, data_source):
     print("Loading classifier: %s" % args.clfpath)
     classifier = pickle.load(open(args.clfpath, "rb"))
-    config = Config({'log_file': 'benchmark.log'})
-    benchmarker = Benchmarker(args, config, data_source, classifier)
+    # check if the user has not defined one?
+    args.log_to = 'benchmark.log'
+    benchmarker = Benchmarker(args, data_source, classifier)
     benchmarker.run()
 
 def run(args):
@@ -30,10 +31,10 @@ def run(args):
     spec = setup.LearningSpec()
 
     if task == 'train':
-        trainer = Trainer(args, Config({}), data_source, spec.training_classifier())
+        trainer = Trainer(args, data_source, spec.training_classifier())
         trainer.run()
     elif task == 'search':
-        searcher = Searcher(args, Config({}), data_source)
+        searcher = Searcher(args, data_source)
         searcher.fit(spec.gridsearch_pipelines())
     elif task == 'benchmark':
         run_benchmarks(args, data_source)
