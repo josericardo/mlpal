@@ -9,6 +9,20 @@ Implement two interfaces and start experimenting.
 
 ## Usage
 
+### Running
+
+To install the package locally:
+
+$ make install
+
+Using:
+
+$ mlpal --help
+
+#### Uninstalling
+
+$ make uninstall
+
 ### Define a learning setup
 
 For mlpal to work, you must define a setup module, that will contain two classes:
