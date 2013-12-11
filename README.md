@@ -27,7 +27,6 @@ The tasks that are already supported:
 * plot_pca
 * misclassified
 
-
 ## Contributing
 
 Random acts of kindness are more than welcome. Besides the Github issues,
