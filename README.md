@@ -13,15 +13,15 @@ Implement two interfaces and start experimenting.
 
 To install the package locally:
 
-$ make install
+`$ make install`
 
 Using:
 
-$ mlpal --help
+`$ mlpal --help`
 
 #### Uninstalling
 
-$ make uninstall
+`$ make uninstall`
 
 ### Define a learning setup
 
