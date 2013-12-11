@@ -16,8 +16,6 @@ def load_config():
     return {}
 
 def parse_args(config):
-    print(config)
-
     defaults = defaultdict(lambda: None)
     for k, v in config.iteritems():
         defaults[k] = v
