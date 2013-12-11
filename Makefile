@@ -1,5 +1,6 @@
 test:
 	 nosetests -s -v $(TEST)
+	 rm *.scores *.png *.log
 
 # local update
 lup: uninstall install 
