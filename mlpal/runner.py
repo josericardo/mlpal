@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import sys
-import pickle
+import joblib
 
 from train import Trainer
 from search import Searcher
@@ -18,7 +18,7 @@ def run_learning_curves(args, spec, data_source):
 
 def run_benchmarks(args, data_source):
     print("Loading classifier: %s" % args.clfpath)
-    classifier = pickle.load(open(args.clfpath, "rb"))
+    classifier = joblib.load(args.clfpath)
     # check if the user has not defined one?
     args.log_to = 'benchmark.log'
     benchmarker = Benchmarker(args, data_source, classifier)

@@ -2,10 +2,10 @@
 # encoding: utf-8
 
 from sklearn.cross_validation import StratifiedShuffleSplit
-import pickle
+import joblib
 import os
 
-_DUMP_PATH = 'misclassifications.pickle'
+_DUMP_PATH = 'misclassifications.dump'
 
 def find_errors(clf, X, y, splits):
     false_positives = []
@@ -44,7 +44,7 @@ def _load_previous_classification(config):
 
     if os.path.isfile(_DUMP_PATH):
         print("Previous data was found. Loading %s" % _DUMP_PATH)
-        return pickle.load(open(_DUMP_PATH))
+        return joblib.load(_DUMP_PATH)
 
     print("No previous data found. Generating.")
 
@@ -62,7 +62,7 @@ def classify(config, clf, data_source):
     errors = find_errors(clf, X, y, sss)
 
     print("Dumping misclassifications to %s..." % _DUMP_PATH),
-    pickle.dump(errors, open(_DUMP_PATH, 'wb'))
+    joblib.dump(errors, _DUMP_PATH, compress=1)
     print("done.")
 
     return errors
