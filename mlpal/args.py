@@ -40,8 +40,6 @@ def parse_args():
     parser.add_argument("--clfpath", default='dumps/last.dump',
         help="Serialized classifier path (benchmarks only)")
 
-    parser.add_argument("--tests", help="Loads the mlpal in the current dir", action='store_true')
-
     parser.add_argument("--cv", type=int, default=defaults.get('cv', 10),
         help="Number of cv iterations")
 
