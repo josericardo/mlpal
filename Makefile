@@ -1,3 +1,5 @@
+default: pylint_errors test
+
 test:
 	 nosetests -s -v $(TEST)
 	 rm *.scores *.png *.log
@@ -24,3 +26,9 @@ up: source_up lup
 
 todos:
 	grep -r --include="*.py" "TODO" .
+
+pylint_errors:
+	 pylint -E --rcfile=.pylintrc mlpal/ --disable=E0611
+
+pylint:
+	 pylint --rcfile=.pylintrc mlpal/ --disable=E0611
