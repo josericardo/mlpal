@@ -2,20 +2,15 @@
 
 import sys
 import os
+
 from mlpal import args
+from mlpal import runner
 
 cli_args = args.parse_args()
-
-if cli_args.tests:
-    # there must be a better way to load the module for testing
-    mlpal_local_path = os.path.realpath('.')
-    sys.path.insert(0, mlpal_local_path)
-
-from mlpal.runner import run
 
 if cli_args.d:
     from ipdb import launch_ipdb_on_exception
     with launch_ipdb_on_exception():
-        run(cli_args)
+        runner.run(cli_args)
 else:
-    run(cli_args)
+    runner.run(cli_args)
