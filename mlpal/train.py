@@ -35,11 +35,10 @@ class Trainer:
         self.log.info("Training evaluation")
         self.classify_and_report(self.classifier, X_train, y_train)
 
-        scores = cross_validation.cross_val_score(self.classifier, X_train, y_train, cv=self.config.cv, scoring='f1')
+        scores = cross_validation.cross_val_score(self.classifier, X_train, y_train, cv=self.config.cv, scoring=self.config.scoring)
 
-        self.log.info("Cross-Validation score: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
-        #self.log.info("= Validation reports =")
-        #X_validation, y_validation = self.ds.validation_data()
+        self.log.info("Cross-Validation %s score: %0.2f (+/- %0.2f)"
+            % (self.config.scoring, scores.mean(), scores.std() * 2))
 
     def benchmark(self, X_test, y_test):
         return self.classify_and_report(self.classifier, X_test, y_test, print_report=False)

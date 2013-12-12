@@ -31,5 +31,5 @@ class ConfusionMatrix:
     def as_str(self):
         return "\n".join(self.as_text_lines())
 
-    def print_confusion_matrix(sefl):
+    def print_confusion_matrix(self):
         print self.as_str()
