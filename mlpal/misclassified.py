@@ -3,10 +3,9 @@
 
 from sklearn.cross_validation import StratifiedShuffleSplit
 import joblib
-import pickle
 import os
 
-_DUMP_PATH = 'misclassifications.pickle'
+_DUMP_PATH = 'misclassifications.dump'
 
 def find_errors(clf, X, y, splits):
     false_positives = []
@@ -63,7 +62,7 @@ def classify(config, clf, data_source):
     errors = find_errors(clf, X, y, sss)
 
     print("Dumping misclassifications to %s..." % _DUMP_PATH),
-    pickle.dump(errors, open(_DUMP_PATH, 'wb'))
+    joblib.dump(errors, _DUMP_PATH, compress=1)
     print("done.")
 
     return errors

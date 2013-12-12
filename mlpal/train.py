@@ -64,7 +64,7 @@ class Trainer:
         if not os.path.isdir('dumps'):
             os.makedirs('dumps')
 
-        dump = "dumps/last.pickle"
+        dump = "dumps/last.dump"
         self.log.info("Saving classifier to %s..." % dump)
-        joblib.dump(clf, dump)
+        joblib.dump(clf, dump, compress=1)
         return dump

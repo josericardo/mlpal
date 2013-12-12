@@ -19,5 +19,5 @@ class RunTargetsSmokeTest(unittest.TestCase):
 
     def test_benchmark_is_ok(self):
         self.assertEqual(None, exit_code_of(mlpal('train')), "train is failing")
-        self.assertEqual(None, exit_code_of(mlpal('benchmark --clfpath=dumps/last.pickle')), "benchmark is failing")
+        self.assertEqual(None, exit_code_of(mlpal('benchmark --clfpath=dumps/last.dump')), "benchmark is failing")
 
