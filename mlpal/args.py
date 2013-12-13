@@ -15,6 +15,24 @@ def _load_config():
         return yaml.load(open(name))
     return {}
 
+def fill_user_space_config(config, args):
+    # things that are defined in the config but are not known params
+    # are considered user-space configuration
+    for k, v in config.iteritems():
+        if not hasattr(args, k):
+            setattr(args, k, v)
+
+    return args
+
+def _normalize_setup_path(path):
+    return path.replace('.py', '').replace(os.sep, '.')
+
+def post_process(config, args):
+    args = fill_user_space_config(config, args)
+    args.setup = _normalize_setup_path(args.setup)
+
+    return args
+
 def parse_args():
     defaults = defaultdict(lambda: None)
     config = _load_config()
@@ -68,12 +86,4 @@ def parse_args():
         default=defaults.get('space', 'log'))
     # end learning curves
 
-    args = parser.parse_args()
-
-    # things that are defined in the config but are not known params
-    # are considered user-space configuration
-    for k, v in config.iteritems():
-        if not hasattr(args, k):
-            setattr(args, k, v)
-
-    return args
+    return post_process(config, parser.parse_args())
