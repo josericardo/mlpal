@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/gendoc/mlpal.png)](https://travis-ci.org/gendoc/mlpal)
+[![Coverage Status](https://coveralls.io/repos/josericardo/mlpal/badge.png?branch=CoverallsSupport)](https://coveralls.io/r/josericardo/mlpal?branch=CoverallsSupport)
 
 # Machine Learning Pal
 
