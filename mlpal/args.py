@@ -3,6 +3,7 @@
 
 import argparse
 import os
+import re
 import yaml
 from datetime import datetime
 from collections import defaultdict
@@ -25,7 +26,8 @@ def fill_user_space_config(config, args):
     return args
 
 def _normalize_setup_path(path):
-    return path.replace('.py', '').replace(os.sep, '.')
+    new_path = re.sub(r'\.py$', '', path)
+    return new_path.replace(os.sep, '.')
 
 def post_process(config, args):
     args = fill_user_space_config(config, args)
