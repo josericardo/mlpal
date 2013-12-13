@@ -35,6 +35,7 @@ class Trainer:
         self.log.info("Training evaluation")
         self.classify_and_report(self.classifier, X_train, y_train)
 
+        self.log.info("Classifier trained. Computing cv score (%d folds)..." % self.config.cv)
         scores = cross_validation.cross_val_score(self.classifier, X_train, y_train, cv=self.config.cv, scoring=self.config.scoring)
 
         self.log.info("Cross-Validation %s score: %0.2f (+/- %0.2f)"
