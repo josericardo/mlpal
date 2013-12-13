@@ -1,0 +1,5 @@
+[MESSAGES CONTROL]
+disable=E0611
+
+[REPORTS]
+output-format=colorized

@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 
-import pickle
 import os
+import joblib
 import numpy as np
-
 from datetime import datetime
 from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
@@ -36,11 +35,10 @@ class Trainer:
         self.log.info("Training evaluation")
         self.classify_and_report(self.classifier, X_train, y_train)
 
-        scores = cross_validation.cross_val_score(self.classifier, X_train, y_train, cv=self.config.cv, scoring='f1')
+        scores = cross_validation.cross_val_score(self.classifier, X_train, y_train, cv=self.config.cv, scoring=self.config.scoring)
 
-        self.log.info("Cross-Validation score: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
-        #self.log.info("= Validation reports =")
-        #X_validation, y_validation = self.ds.validation_data()
+        self.log.info("Cross-Validation %s score: %0.2f (+/- %0.2f)"
+            % (self.config.scoring, scores.mean(), scores.std() * 2))
 
     def benchmark(self, X_test, y_test):
         return self.classify_and_report(self.classifier, X_test, y_test, print_report=False)
@@ -62,21 +60,10 @@ class Trainer:
         return cm
 
     def save(self, clf):
-        now = datetime.now().strftime("%Y%m%dat%H%M%S")
-        return self.dump('clf', now, clf)
-
-    def dump(self, kind, sufix, obj):
         if not os.path.isdir('dumps'):
             os.makedirs('dumps')
 
-        dump = "%s%s.pickle" % (kind, sufix)
-
-        self.log.info("Saving %s to %s..." % (kind, dump))
-        with open("dumps/%s" % dump, 'wb') as f:
-            pickle.dump(obj, f)
-
-        self.log.info("Linking as the last dump")
-        if os.path.isfile("dumps/last.pickle"):
-            os.unlink('dumps/last.pickle')
-        os.symlink(dump, 'dumps/last.pickle')
+        dump = "dumps/last.dump"
+        self.log.info("Saving classifier to %s..." % dump)
+        joblib.dump(clf, dump, compress=1)
         return dump
