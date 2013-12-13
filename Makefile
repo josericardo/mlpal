@@ -20,7 +20,7 @@ source_up:
 
 test-coverage:
 	rm -rf .coverage coverage
-	nosetests -s -v --with-coverage
+	nosetests -s -v --with-coverage --cover-package=mlpal
 
 up: source_up lup
 
