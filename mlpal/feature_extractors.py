@@ -17,7 +17,7 @@ class ColumnExtractor:
         return self.transform(X, y)
 
     def deep_getattr(self, obj, column):
-        """ Fetches properties from child objects 
+        """ Fetches properties from child objects
 
         Works for:
 
@@ -44,23 +44,40 @@ class GetFirst(BaseFeatureExtractor):
 
 
 class ColsExtractor(BaseFeatureExtractor):
-    """ Extracts columns from a matrix 
+    """ Extracts columns from a matrix
 
     Params
     ------
+    cols: list of integers
+        list of column indices
+    astype: type (int, str, etc)
+        if defined, will be used to convert
+        the new matrix data. Eg.: int, str
+    flat: bool
+        should the matrix be flattened?.
+        `cols` is supposed to have  only one col in this case.
 
-    cols: list of column indices
-    astype: if defined, will be used to convert
-            the new matrix data. Eg.: int, str
+    Returns
+    -------
+    numpy array
+        Containing only the select cols
+        1d if flat==True
+        2d if flat==False
     """
-    def __init__(self, cols, astype=None):
+    def __init__(self, cols, astype=None, flat=False):
         self.cols = cols
         self.astype = astype
+        self.flat = flat
 
     def map(self, x):
+        cols = self.cols[0] if self.flat else self.cols
         if self.astype:
-            return x[self.cols].astype(self.astype)
-        return x[self.cols]
+            return x[cols].astype(self.astype)
+        return x[cols]
 
     def get_params(self, deep=True):
-        return {'cols': self.cols, 'astype': self.astype}
+        return {
+            'cols': self.cols,
+            'astype': self.astype,
+            'flat': self.flat
+        }

@@ -51,3 +51,10 @@ class ColsExtractorTest(unittest.TestCase):
         ]
 
         self.assertTrue(np.array_equal(expected, features))
+
+    def test_extracts_and_flattens(self):
+        ce = ColsExtractor([0], flat=True)
+        features = ce.transform(self.X)
+
+        expected = [0, 3]
+        self.assertTrue(np.array_equal(expected, features))
