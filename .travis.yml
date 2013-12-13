@@ -14,6 +14,6 @@ install:
     - sudo pip install coverage coveralls
     - python setup.py build_ext --inplace
 script:
-    - make test;
+    - make test-coverage
 after_success:
     - coveralls
