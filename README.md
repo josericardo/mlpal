@@ -1,5 +1,7 @@
-[![Build Status](https://travis-ci.org/gendoc/mlpal.png)](https://travis-ci.org/gendoc/mlpal)
-[![Coverage Status](https://coveralls.io/repos/josericardo/mlpal/badge.png?branch=CoverallsSupport)](https://coveralls.io/r/josericardo/mlpal?branch=CoverallsSupport)
+Master | Master | Develop | Develop
+-------|--------|---------|--------
+[![Build Status](https://travis-ci.org/gendoc/mlpal.png?branch=master)](https://travis-ci.org/gendoc/mlpal) | [![Coverage Status](https://coveralls.io/repos/josericardo/mlpal/badge.png?branch=CoverallsSupport)](https://coveralls.io/r/josericardo/mlpal?branch=master) | [![Build Status](https://travis-ci.org/gendoc/mlpal.png?branch=master)](https://travis-ci.org/gendoc/mlpal) | [![Coverage Status](https://coveralls.io/repos/josericardo/mlpal/badge.png?branch=CoverallsSupport)](https://coveralls.io/r/josericardo/mlpal?branch=develop)
+
 
 # Machine Learning Pal
 
