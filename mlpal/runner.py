@@ -2,6 +2,7 @@
 
 import sys
 import joblib
+from datetime import datetime
 
 from sklearn.pipeline import Pipeline
 
@@ -67,9 +68,11 @@ def run(args, setup=None):
     history = History(id=args.history_id)
     runtime.info = history.new()
     runtime.info['config'] = runtime.config.__repr__()
+    runtime.info['started_at'] = str(datetime.now())
 
     task = args.task
     task_function = getattr(sys.modules[__name__], 'run_%s' % task)
     task_function(runtime)
 
+    runtime.info['finished_at'] = str(datetime.now())
     history.append(runtime.info)
