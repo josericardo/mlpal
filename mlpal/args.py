@@ -5,8 +5,10 @@ import argparse
 import os
 import re
 import yaml
+
 from datetime import datetime
 from collections import defaultdict
+from .version import __version__
 
 def _load_config():
     # TODO read $MLPAL_TESTS
@@ -32,6 +34,7 @@ def _normalize_setup_path(path):
 def post_process(config, args):
     args = fill_user_space_config(config, args)
     args.setup = _normalize_setup_path(args.setup)
+    args.mlpal_version = __version__
 
     return args
 
