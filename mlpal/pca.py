@@ -20,3 +20,4 @@ def plot_pca(X, y, output_file='pca_plot.png'):
 
     pl.title('Classes plotted according to the 2 principal components (RandomizedPCA)')
     pl.savefig(output_file)
+    print("PCA Plot saved to %s." % output_file)
