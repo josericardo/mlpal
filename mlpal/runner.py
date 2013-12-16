@@ -3,6 +3,8 @@
 import sys
 import joblib
 
+from sklearn.pipeline import Pipeline
+
 from train import Trainer
 from search import Searcher
 from benchmark import Benchmarker
@@ -43,8 +45,14 @@ def run(args):
         run_learning_curves(args, spec, data_source)
     elif task == 'plot_pca':
         X, y = data_source.train_data()
+
         clf = spec.training_classifier()
-        X = clf.fit_transform(X, y)
+        if isinstance(clf, Pipeline):
+            X = clf.fit_transform(X, y)
+
+        if X.shape[1] < 2:
+            raise RuntimeError('You must have at least 2 features to generate a PCA plot')
+
         plot_pca(X, y)
     elif task == 'misclassified':
         print_misclassified(args, spec.training_classifier(), data_source)
