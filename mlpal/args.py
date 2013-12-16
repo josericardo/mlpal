@@ -91,4 +91,8 @@ def parse_args():
         default=defaults.get('space', 'log'))
     # end learning curves
 
+    parser.add_argument("--history-id", type=str,
+        help="History file's id",
+        default=defaults.get('history_id', 'history'))
+
     return post_process(config, parser.parse_args())

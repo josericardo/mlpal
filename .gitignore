@@ -12,3 +12,4 @@ dumps/**
 *.scores
 .coverage
 htmlcov
+history.json

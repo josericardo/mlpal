@@ -25,7 +25,7 @@ def run_benchmark(rt):
     classifier = joblib.load(args.clfpath)
     # check if the user has not defined one?
     args.log_to = 'benchmark.log'
-    benchmarker = Benchmarker(args, rt.data_source, classifier)
+    benchmarker = Benchmarker(rt, args, rt.data_source, classifier)
     benchmarker.run()
 
 def run_plot_pca(rt):
@@ -41,7 +41,7 @@ def run_plot_pca(rt):
     plot_pca(X, y)
 
 def run_train(rt):
-    trainer = Trainer(rt.config, rt.data_source,
+    trainer = Trainer(rt, rt.config, rt.data_source,
         rt.spec.training_classifier())
     trainer.run()
 
@@ -55,15 +55,21 @@ def run_misclassified(rt):
 class MLPalRuntime:
     pass
 
-def run(args):
-    setup = import_module(args.setup)
+def run(args, setup=None):
+    if not setup:
+        setup = import_module(args.setup)
 
     runtime = MLPalRuntime()
-    runtime.info = History().new()
     runtime.data_source = setup.DataSource(args)
     runtime.spec = setup.LearningSpec()
     runtime.config = args
 
+    history = History(id=args.history_id)
+    runtime.info = history.new()
+    runtime.info['config'] = runtime.config.__repr__()
+
     task = args.task
     task_function = getattr(sys.modules[__name__], 'run_%s' % task)
     task_function(runtime)
+
+    history.append(runtime.info)

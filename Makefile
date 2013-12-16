@@ -2,7 +2,7 @@ default: pylint_errors test
 
 test:
 	 nosetests -s -v $(TEST)
-	 rm *.scores *.png *.log
+	 rm *.scores *.png *.log history.json
 
 # local update
 lup: uninstall install 

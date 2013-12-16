@@ -6,9 +6,6 @@ import utils
 
 
 class RunTargetsSmokeTest(unittest.TestCase):
-    def test_train_is_ok(self):
-        self.assertEqual(None, utils.run_mlpal('train'), "train is failing")
-
     def test_search_is_ok(self):
         self.assertEqual(None, utils.run_mlpal('search --cv=3 -j 2 --random-state=42'), "search is failing")
 

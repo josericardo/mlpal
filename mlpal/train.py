@@ -12,14 +12,16 @@ from log_utils import log_confusion_matrix
 import logger_factory
 
 class Trainer:
-    def __init__(self, config, data_source, classifier):
+    def __init__(self, rt, config, data_source, classifier):
         """
         Params
         ------
+        rt: MLPalRuntime (see runner#run)
         config: args
         data_source: a BaseDataSource
         classifier: a scikit-learn classifier
         """
+        self.rt = rt
         self.log = logger_factory.logger_for(config, self.__class__.__name__)
         self.classifier = classifier
         self.ds = data_source
@@ -40,6 +42,14 @@ class Trainer:
 
         self.log.info("Cross-Validation %s score: %0.2f (+/- %0.2f)"
             % (self.config.scoring, scores.mean(), scores.std() * 2))
+
+        self.add_training_info_to_history(scores)
+
+    def add_training_info_to_history(self, scores):
+        e = self.rt.info
+        e['clf'] = self.classifier.__repr__()
+        e['cv_scores_mean'] = scores.mean()
+        e['cv_scores_std'] = scores.std()
 
     def benchmark(self, X_test, y_test):
         return self.classify_and_report(self.classifier, X_test, y_test, print_report=False)

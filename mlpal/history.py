@@ -5,11 +5,11 @@ import json
 import os
 
 class History:
-    def __init__(self, file='history.json'):
-        self.file = file
+    def __init__(self, id='history'):
+        self.file = '%s.json' % id
 
-        if os.path.isfile(file):
-            self.entries = json.loads(open(file).read())
+        if os.path.isfile(self.file):
+            self.entries = json.loads(open(self.file).read())
         else:
             self.entries = []
 
@@ -22,6 +22,9 @@ class History:
 
     def _save(self):
         json.dump(self.entries, open(self.file, 'w'))
+
+    def get(self, i):
+        return self.entries[i]
 
     def __len__(self):
         return len(self.entries)
