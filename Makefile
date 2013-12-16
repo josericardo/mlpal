@@ -32,3 +32,7 @@ pylint_errors:
 
 pylint:
 	 pylint --rcfile=.pylintrc mlpal/ --disable=E0611
+
+clean:
+	rm -rf htmlcov
+
