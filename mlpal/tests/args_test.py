@@ -1,5 +1,5 @@
 #!/bin/env python
-# encoding: utf-8
+# coding=utf-8
 
 import unittest
 from ..args import _normalize_setup_path
