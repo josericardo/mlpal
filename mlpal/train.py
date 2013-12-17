@@ -38,12 +38,16 @@ class Trainer:
         self.classify_and_report(self.classifier, X_train, y_train)
 
         self.log.info("Classifier trained. Computing cv score (%d folds)..." % self.config.cv)
-        scores = cross_validation.cross_val_score(self.classifier, X_train, y_train, cv=self.config.cv, scoring=self.config.scoring)
+        scores = self._cv_scores(self.classifier, X_train, y_train)
+        self.add_training_info_to_history(scores)
+
+    def _cv_scores(self, clf, X, y):
+        scores = cross_validation.cross_val_score(clf, X, y, cv=self.config.cv, scoring=self.config.scoring)
 
         self.log.info("Cross-Validation %s score: %0.2f (+/- %0.2f)"
             % (self.config.scoring, scores.mean(), scores.std() * 2))
 
-        self.add_training_info_to_history(scores)
+        return scores
 
     def add_training_info_to_history(self, scores):
         e = self.rt.info

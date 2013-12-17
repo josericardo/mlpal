@@ -30,8 +30,13 @@ class Searcher(Trainer):
 
         grid.fit(X_train, y_train)
         dump_path = self.save(grid)
-        X_validate, y_validate = self.ds.validation_data()
-        y_predicted = grid.predict(X_validate)
-        self.get_metrics(y_predicted, y_validate, print_report=True)
 
+        self.log.info("Best classifier found via GridSearch. On training data:")
+        self.classify_and_report(grid.best_estimator_, X_train, y_train)
+
+        self.log.info("Computing cv score (%d folds)..." % self.config.cv)
+
+        # TODO grid.best_estimator_ has already been cross-validated
+        # reuse the scores already computed
+        scores = self._cv_scores(grid.best_estimator_, X_train, y_train)
         return {'clf': grid, 'dump_path': dump_path}
