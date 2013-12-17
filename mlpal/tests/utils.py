@@ -8,7 +8,7 @@ def exit_code_of(cmd):
     return process.close()
 
 def mlpal(task, setup):
-    cmd = "MLPAL_TESTS='true' bin/mlpal %s %s" % (task, setup)
+    cmd = "bin/mlpal %s %s" % (task, setup)
     print("\nRunning: %s" % cmd)
     return cmd
 

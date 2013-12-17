@@ -11,7 +11,6 @@ from collections import defaultdict
 from .version import __version__
 
 def _load_config():
-    # TODO read $MLPAL_TESTS
     name = 'config.yaml'
     if os.path.exists(name):
         print("%s was found, loading." % name)
