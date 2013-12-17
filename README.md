@@ -21,6 +21,7 @@ To install the package locally:
 Using:
 
 `$ mlpal -h`
+
 `$ mlpal task -h`
 
 #### Uninstalling
