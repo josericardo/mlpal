@@ -3,9 +3,8 @@
 import sys
 import os
 
-if os.getenv('MLPAL_TESTS'):
-    mlpal_local_path = os.path.realpath('.')
-    sys.path.insert(0, mlpal_local_path)
+mlpal_local_path = os.path.realpath('.')
+sys.path.insert(0, mlpal_local_path)
 
 from mlpal import args
 from mlpal import runner
