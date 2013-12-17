@@ -15,6 +15,9 @@ class LearningSpec(BaseLearningSpec):
 
 
 class DataSource(BaseDataSource):
+    def raw_to_matrix(self, data):
+        raise LearningSetupIsBroken('#raw_to_matrix not implemented')
+
     def raw_train(self):
         raise LearningSetupIsBroken('#raw_train not implemented')
 
