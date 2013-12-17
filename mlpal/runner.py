@@ -55,19 +55,19 @@ def run_misclassified(rt):
 
 def run_new_setup(rt):
     import new_setup
-    new_setup.generate(rt.setup)
+    new_setup.generate(rt.config.new_setup_id)
 
 class MLPalRuntime:
     pass
 
 def run(args, setup=None):
-    if not setup:
-        setup = import_module(args.setup)
-
     runtime = MLPalRuntime()
-    runtime.data_source = setup.DataSource(args)
-    runtime.spec = setup.LearningSpec()
     runtime.config = args
+
+    if not setup and hasattr(args, 'setup'):
+        setup = import_module(args.setup)
+        runtime.data_source = setup.DataSource(args)
+        runtime.spec = setup.LearningSpec()
 
     history = History(id=args.history_id)
     runtime.info = history.new()

@@ -75,6 +75,11 @@ def parse_args():
 
     subparsers = parser.add_subparsers(title="subcommands", dest='task')
 
+    new_setup_parser = subparsers.add_parser('new_setup', parents=[common_parser],
+            help='Generates a new setup file.',
+            conflict_handler='resolve')
+    new_setup_parser.add_argument("new_setup_id", help="New setup id.", default='new_setup')
+
     subparsers.add_parser('plot_pca', parents=[ml_parser],
             help='Plot the data reduced to 2-dimensions',
             conflict_handler='resolve')
