@@ -20,7 +20,8 @@ To install the package locally:
 
 Using:
 
-`$ mlpal --help`
+`$ mlpal -h`
+`$ mlpal task -h`
 
 #### Uninstalling
 
@@ -33,16 +34,11 @@ For mlpal to work, you must define a setup module, that will contain two classes
 - `DataSource`
 - `LearningSpec`
 
-A working example of setup file is the `tests/dummy_setup.py`.
+You can generate a new setup via:
 
-The tasks that are already supported:
+`$ mlpal new_setup my_project`
 
-* train
-* search
-* benchmark
-* learning_curves
-* plot_pca
-* misclassified
+and fill the blanks.
 
 Most command line parameters can have their default value defined in the
 `config.yaml` file.
