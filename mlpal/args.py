@@ -41,7 +41,7 @@ def post_process(config, args):
 
     return args
 
-def parse_args():
+def parse_args(args=None):
     defaults = defaultdict(lambda: None)
     config = _load_config()
 
@@ -49,6 +49,7 @@ def parse_args():
         defaults[k] = v
 
     parser = argparse.ArgumentParser(conflict_handler='resolve')
+    subparsers = parser.add_subparsers(title="subcommands", dest='task')
 
     common_parser = argparse.ArgumentParser()
 
@@ -73,7 +74,6 @@ def parse_args():
     ml_parser.add_argument("--log-to", type=str, help="Log file path",
         default=defaults.get('log_to', default_log_name))
 
-    subparsers = parser.add_subparsers(title="subcommands", dest='task')
 
     new_setup_parser = subparsers.add_parser('new_setup', parents=[common_parser],
             help='Generates a new setup file.',
@@ -128,4 +128,5 @@ def parse_args():
         help="How are the points going to be spread in the space?",
         default=defaults.get('space', 'log'))
 
-    return post_process(config, parser.parse_args())
+    parsed_args = parser.parse_args() if not args else parser.parse_args(args)
+    return post_process(config, parsed_args)

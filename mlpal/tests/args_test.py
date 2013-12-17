@@ -2,7 +2,7 @@
 # coding=utf-8
 
 import unittest
-from ..args import _normalize_setup_path
+from ..args import _normalize_setup_path, parse_args
 
 class ArgsTest(unittest.TestCase):
     def setUp(self):
@@ -14,3 +14,7 @@ class ArgsTest(unittest.TestCase):
         self.assertEqual('module.setupy', _normalize_setup_path('module.setupy'))
         self.assertEqual('inner.module.setup', _normalize_setup_path('inner/module/setup.py'))
         self.assertEqual('inner.pymodule.setup', _normalize_setup_path('inner.pymodule.setup'))
+
+    def test_defines_args_properly(self):
+        # just checking if we're using ParseArgs properly
+        self.assertIsNotNone(parse_args(['train', 'setup_def']))
