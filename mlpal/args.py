@@ -64,6 +64,21 @@ def generate_parser(defaults):
 
     return parser
 
+def gen_common_args_parser(defaults):
+    common_parser = argparse.ArgumentParser()
+
+    common_parser.add_argument("-d", help="Launch debugger on exception", action='store_true')
+    common_parser.add_argument("-q", help="Less verbosity on STDOUT",
+        action='store_true', default=defaults.get('q', False))
+    common_parser.add_argument("-f", help="Force", action='store_true')
+    common_parser.add_argument("--desc",  default='', type=str,
+            help="Textual description of this run (goes to history)")
+    common_parser.add_argument("--history-id", type=str,
+        help="History file's id",
+        default=defaults.get('history_id', 'history'))
+
+    return common_parser
+
 def add_mlpal_tasks_to(subparsers, common_parser):
     new_setup_parser = subparsers.add_parser('new_setup', parents=[common_parser],
             help='Generates a new setup file.',
@@ -118,20 +133,6 @@ def add_machine_learning_tasks_to(subparsers, ml_parser, defaults):
     lc_parser.add_argument("--space", type=str, choices=['log', 'linear'],
         help="How are the points going to be spread in the space?",
         default=defaults.get('space', 'log'))
-
-
-def gen_common_args_parser(defaults):
-    common_parser = argparse.ArgumentParser()
-
-    common_parser.add_argument("-d", help="Launch debugger on exception", action='store_true')
-    common_parser.add_argument("-q", help="Less verbosity on STDOUT",
-        action='store_true', default=defaults.get('q', False))
-    common_parser.add_argument("-f", help="Force", action='store_true')
-    common_parser.add_argument("--history-id", type=str,
-        help="History file's id",
-        default=defaults.get('history_id', 'history'))
-
-    return common_parser
 
 def machine_learning_args_parser(common_parser, defaults):
     ml_parser = argparse.ArgumentParser(parents=[common_parser], conflict_handler='resolve')
