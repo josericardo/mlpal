@@ -48,38 +48,29 @@ def parse_args(args=None):
     for k, v in config.iteritems():
         defaults[k] = v
 
+    parser = generate_parser(defaults)
+    parsed_args = parser.parse_args() if not args else parser.parse_args(args)
+    return post_process(config, parsed_args)
+
+def generate_parser(defaults):
     parser = argparse.ArgumentParser(conflict_handler='resolve')
     subparsers = parser.add_subparsers(title="subcommands", dest='task')
 
-    common_parser = argparse.ArgumentParser()
+    common_parser = gen_common_args_parser(defaults)
+    ml_parser = machine_learning_args_parser(common_parser, defaults)
 
-    common_parser.add_argument("-d", help="Launch debugger on exception", action='store_true')
-    common_parser.add_argument("-q", help="Less verbosity on STDOUT",
-        action='store_true', default=defaults.get('q', False))
-    common_parser.add_argument("-f", help="Force", action='store_true')
-    common_parser.add_argument("--history-id", type=str,
-        help="History file's id",
-        default=defaults.get('history_id', 'history'))
+    add_mlpal_tasks_to(subparsers, common_parser)
+    add_machine_learning_tasks_to(subparsers, ml_parser, defaults)
 
-    ml_parser = argparse.ArgumentParser(parents=[common_parser], conflict_handler='resolve')
-    ml_parser.add_argument("setup", help="Python module with the running definitions")
-    ml_parser.add_argument("-n", help="Sample size", type=int, default=defaults['n'])
-    ml_parser.add_argument("-j", help="# of jobs", type=int, default=defaults.get('j', 1))
-    ml_parser.add_argument("--cv", type=int, default=defaults.get('cv', 10),
-        help="Number of cv iterations")
+    return parser
 
-    ml_parser.add_argument("-o", help="Output files prefix.", type=str, default=defaults['o'])
-
-    default_log_name = 'lastrun-%s.log' % datetime.now().strftime('%Y%m%d_%H%M%S')
-    ml_parser.add_argument("--log-to", type=str, help="Log file path",
-        default=defaults.get('log_to', default_log_name))
-
-
+def add_mlpal_tasks_to(subparsers, common_parser):
     new_setup_parser = subparsers.add_parser('new_setup', parents=[common_parser],
             help='Generates a new setup file.',
             conflict_handler='resolve')
     new_setup_parser.add_argument("new_setup_id", help="New setup id.", default='new_setup')
 
+def add_machine_learning_tasks_to(subparsers, ml_parser, defaults):
     subparsers.add_parser('plot_pca', parents=[ml_parser],
             help='Plot the data reduced to 2-dimensions',
             conflict_handler='resolve')
@@ -128,5 +119,32 @@ def parse_args(args=None):
         help="How are the points going to be spread in the space?",
         default=defaults.get('space', 'log'))
 
-    parsed_args = parser.parse_args() if not args else parser.parse_args(args)
-    return post_process(config, parsed_args)
+
+def gen_common_args_parser(defaults):
+    common_parser = argparse.ArgumentParser()
+
+    common_parser.add_argument("-d", help="Launch debugger on exception", action='store_true')
+    common_parser.add_argument("-q", help="Less verbosity on STDOUT",
+        action='store_true', default=defaults.get('q', False))
+    common_parser.add_argument("-f", help="Force", action='store_true')
+    common_parser.add_argument("--history-id", type=str,
+        help="History file's id",
+        default=defaults.get('history_id', 'history'))
+
+    return common_parser
+
+def machine_learning_args_parser(common_parser, defaults):
+    ml_parser = argparse.ArgumentParser(parents=[common_parser], conflict_handler='resolve')
+    ml_parser.add_argument("setup", help="Python module with the running definitions")
+    ml_parser.add_argument("-n", help="Sample size", type=int, default=defaults['n'])
+    ml_parser.add_argument("-j", help="# of jobs", type=int, default=defaults.get('j', 1))
+    ml_parser.add_argument("--cv", type=int, default=defaults.get('cv', 10),
+        help="Number of cv iterations")
+
+    ml_parser.add_argument("-o", help="Output files prefix.", type=str, default=defaults['o'])
+
+    default_log_name = 'lastrun-%s.log' % datetime.now().strftime('%Y%m%d_%H%M%S')
+    ml_parser.add_argument("--log-to", type=str, help="Log file path",
+        default=defaults.get('log_to', default_log_name))
+
+    return ml_parser
