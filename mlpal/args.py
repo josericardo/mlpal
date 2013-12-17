@@ -33,7 +33,10 @@ def _normalize_setup_path(path):
 
 def post_process(config, args):
     args = fill_user_space_config(config, args)
-    args.setup = _normalize_setup_path(args.setup)
+
+    if hasattr(args, 'setup'):
+        args.setup = _normalize_setup_path(args.setup)
+
     args.mlpal_version = __version__
 
     return args
