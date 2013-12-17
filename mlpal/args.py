@@ -45,54 +45,79 @@ def parse_args():
     for k, v in config.iteritems():
         defaults[k] = v
 
-    tasks = ['train', 'search', 'benchmark',
-             'learning_curves', 'plot_pca', 'misclassified']
+    parser = argparse.ArgumentParser(conflict_handler='resolve')
 
-    parser = argparse.ArgumentParser()
+    common_parser = argparse.ArgumentParser()
 
-    parser.add_argument("task", choices=tasks, help="The task to be run")
-    parser.add_argument("setup", help="Python module with the running definitions")
-    parser.add_argument("-d", help="Launch debugger on exception", action='store_true')
-    parser.add_argument("-n", help="Sample size", type=int, default=defaults['n'])
-    parser.add_argument("-j", help="# of jobs", type=int, default=defaults.get('j', 1))
-    parser.add_argument("-o", help="Output files prefix.", type=str, default=defaults['o'])
-    parser.add_argument("-f", help="Force", action='store_true')
-    parser.add_argument("-q", help="Less verbosity on STDOUT",
+    common_parser.add_argument("-d", help="Launch debugger on exception", action='store_true')
+    common_parser.add_argument("-q", help="Less verbosity on STDOUT",
         action='store_true', default=defaults.get('q', False))
+    common_parser.add_argument("-f", help="Force", action='store_true')
+    common_parser.add_argument("--history-id", type=str,
+        help="History file's id",
+        default=defaults.get('history_id', 'history'))
 
-    parser.add_argument("--clfpath", default='dumps/last.dump',
-        help="Serialized classifier path (benchmarks only)")
-
-    parser.add_argument("--cv", type=int, default=defaults.get('cv', 10),
+    ml_parser = argparse.ArgumentParser(parents=[common_parser], conflict_handler='resolve')
+    ml_parser.add_argument("setup", help="Python module with the running definitions")
+    ml_parser.add_argument("-n", help="Sample size", type=int, default=defaults['n'])
+    ml_parser.add_argument("-j", help="# of jobs", type=int, default=defaults.get('j', 1))
+    ml_parser.add_argument("--cv", type=int, default=defaults.get('cv', 10),
         help="Number of cv iterations")
 
-    parser.add_argument("--scoring", type=str, default=defaults.get('scoring', 'f1'),
+    ml_parser.add_argument("-o", help="Output files prefix.", type=str, default=defaults['o'])
+
+    default_log_name = 'lastrun-%s.log' % datetime.now().strftime('%Y%m%d_%H%M%S')
+    ml_parser.add_argument("--log-to", type=str, help="Log file path",
+        default=defaults.get('log_to', default_log_name))
+
+    subparsers = parser.add_subparsers(title="subcommands", dest='task')
+
+    subparsers.add_parser('plot_pca', parents=[ml_parser],
+            help='Plot the data reduced to 2-dimensions',
+            conflict_handler='resolve')
+
+    subparsers.add_parser('misclassified', parents=[ml_parser],
+            help='Prints the examples that were misclassified during Cross Validation',
+            conflict_handler='resolve')
+
+    train_search_parser = argparse.ArgumentParser(parents=[ml_parser], conflict_handler='resolve')
+
+    train_search_parser.add_argument("--scoring", type=str, default=defaults.get('scoring', 'f1'),
         help="Scoring function")
 
-    parser.add_argument("--random-state", type=int,
+    train_search_parser.add_argument("--random-state", type=int,
         default=defaults['random_state'],
         help="Pseudo random number generator state")
 
-    default_log_name = 'lastrun-%s.log' % datetime.now().strftime('%Y%m%d_%H%M%S')
-    parser.add_argument("--log-to", type=str, help="Log file path",
-        default=defaults.get('log_to', default_log_name))
+    train_parser = subparsers.add_parser('train', parents=[train_search_parser],
+            help='Train a classifier',
+            conflict_handler='resolve')
 
-    # begin learning curves
-    parser.add_argument("--begin", type=int,
+    search_parser = subparsers.add_parser('search', parents=[train_search_parser],
+            help='Grid Search',
+            conflict_handler='resolve')
+
+    benchmark_parser = subparsers.add_parser('benchmark', parents=[ml_parser],
+            help='Benchmark a classifier on the test set.',
+            conflict_handler='resolve')
+
+    benchmark_parser.add_argument("--clfpath", default='dumps/last.dump',
+        help="Serialized classifier path (benchmarks only)")
+
+    lc_parser = subparsers.add_parser('learning_curves', parents=[ml_parser],
+            help='Plot learning curves',
+            conflict_handler='resolve')
+
+    lc_parser.add_argument("--begin", type=int,
         help="The size of the smallest training set used to plot the learning curves",
         default=defaults.get('begin', 30))
 
-    parser.add_argument("--points", type=int,
+    lc_parser.add_argument("--points", type=int,
         help="Number of points in the learning curves",
         default=defaults.get('points', 8))
 
-    parser.add_argument("--space", type=str, choices=['log', 'linear'],
+    lc_parser.add_argument("--space", type=str, choices=['log', 'linear'],
         help="How are the points going to be spread in the space?",
         default=defaults.get('space', 'log'))
-    # end learning curves
-
-    parser.add_argument("--history-id", type=str,
-        help="History file's id",
-        default=defaults.get('history_id', 'history'))
 
     return post_process(config, parser.parse_args())

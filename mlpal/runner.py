@@ -53,6 +53,10 @@ def run_search(rt):
 def run_misclassified(rt):
     print_misclassified(rt.config, rt.spec.training_classifier(), rt.data_source)
 
+def run_new_setup(rt):
+    import new_setup
+    new_setup.generate(rt.setup)
+
 class MLPalRuntime:
     pass
 
