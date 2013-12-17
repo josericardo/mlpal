@@ -1,6 +1,8 @@
+default: pylint_errors test
+
 test:
 	 nosetests -s -v $(TEST)
-	 rm *.scores *.png *.log
+	 rm *.scores *.png *.log history.json
 
 # local update
 lup: uninstall install 
@@ -16,7 +18,21 @@ install:
 source_up:
 	git pull origin master
 
+test-coverage:
+	rm -rf .coverage coverage
+	nosetests -s -v --with-coverage --cover-package=mlpal
+
 up: source_up lup
 
 todos:
 	grep -r --include="*.py" "TODO" .
+
+pylint_errors:
+	 pylint -E --rcfile=.pylintrc mlpal/ --disable=E0611
+
+pylint:
+	 pylint --rcfile=.pylintrc mlpal/ --disable=E0611
+
+clean:
+	rm -rf htmlcov
+

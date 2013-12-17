@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 
 import sys
-import pickle
+import joblib
+from datetime import datetime
+
+from sklearn.pipeline import Pipeline
 
 from train import Trainer
 from search import Searcher
@@ -9,40 +12,67 @@ from benchmark import Benchmarker
 from misclassified import print_misclassified
 from learning_curves import plot_lcs
 from pca import plot_pca
+from history import History
 from importlib import import_module
 from config import Config
 
-def run_learning_curves(args, spec, data_source):
-    X, y = data_source.train_data()
-    plot_lcs(spec, X, y, args)
+def run_learning_curves(rt):
+    X, y = rt.data_source.train_data()
+    plot_lcs(rt.spec, X, y, rt.config)
 
-def run_benchmarks(args, data_source):
+def run_benchmark(rt):
+    args = rt.config
     print("Loading classifier: %s" % args.clfpath)
-    classifier = pickle.load(open(args.clfpath, "rb"))
+    classifier = joblib.load(args.clfpath)
     # check if the user has not defined one?
     args.log_to = 'benchmark.log'
-    benchmarker = Benchmarker(args, data_source, classifier)
+    benchmarker = Benchmarker(rt, args, rt.data_source, classifier)
     benchmarker.run()
 
-def run(args):
-    # TODO update args according to config.json here
-    setup = import_module(args.setup)
-    task = args.task
-    data_source = setup.DataSource(args)
-    spec = setup.LearningSpec()
+def run_plot_pca(rt):
+    X, y = rt.data_source.train_data()
 
-    if task == 'train':
-        trainer = Trainer(args, data_source, spec.training_classifier())
-        trainer.run()
-    elif task == 'search':
-        searcher = Searcher(args, data_source)
-        searcher.fit(spec.gridsearch_pipelines())
-    elif task == 'benchmark':
-        run_benchmarks(args, data_source)
-    elif task == 'learning_curves':
-        run_learning_curves(args, spec, data_source)
-    elif task == 'plot_pca':
-        X, y = data_source.train_data()
-        plot_pca(X, y)
-    elif task == 'misclassified':
-        print_misclassified(args, spec.training_classifier(), data_source)
+    clf = rt.spec.training_classifier()
+    if isinstance(clf, Pipeline):
+        X = clf.fit_transform(X, y)
+
+    if X.shape[1] < 2:
+        raise RuntimeError('You must have at least 2 features to generate a PCA plot')
+
+    plot_pca(X, y)
+
+def run_train(rt):
+    trainer = Trainer(rt, rt.config, rt.data_source,
+        rt.spec.training_classifier())
+    trainer.run()
+
+def run_search(rt):
+    searcher = Searcher(rt.config, rt.data_source)
+    searcher.fit(rt.spec.gridsearch_pipelines())
+
+def run_misclassified(rt):
+    print_misclassified(rt.config, rt.spec.training_classifier(), rt.data_source)
+
+class MLPalRuntime:
+    pass
+
+def run(args, setup=None):
+    if not setup:
+        setup = import_module(args.setup)
+
+    runtime = MLPalRuntime()
+    runtime.data_source = setup.DataSource(args)
+    runtime.spec = setup.LearningSpec()
+    runtime.config = args
+
+    history = History(id=args.history_id)
+    runtime.info = history.new()
+    runtime.info['config'] = runtime.config.__repr__()
+    runtime.info['started_at'] = str(datetime.now())
+
+    task = args.task
+    task_function = getattr(sys.modules[__name__], 'run_%s' % task)
+    task_function(runtime)
+
+    runtime.info['finished_at'] = str(datetime.now())
+    history.append(runtime.info)

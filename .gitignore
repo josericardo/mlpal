@@ -3,7 +3,7 @@
 build
 dist
 MANIFEST
-*.pickle
+*.dump
 .idea
 *.log
 config.json
@@ -12,3 +12,4 @@ dumps/**
 *.scores
 .coverage
 htmlcov
+history.json

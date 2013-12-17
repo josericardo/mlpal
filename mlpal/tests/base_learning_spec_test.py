@@ -6,10 +6,12 @@ import os
 from ..base_learning_spec import BaseLearningSpec
 from sklearn.dummy import DummyClassifier
 from dummy_setup import DataSource as DummyDS
-from utils import exit_code_of
+import utils
+
 
 class DataSource(DummyDS):
     pass
+
 
 class LearningSpec(BaseLearningSpec):
     def training_classifier(self):
@@ -22,7 +24,14 @@ class LearningSpec(BaseLearningSpec):
             }
         }
 
+
 class BaseLearningSpecTest(unittest.TestCase):
-    def test_LearningSpec_can_relly_on_BaseLearningSpec(self):
-        self.assertEqual(None, exit_code_of('bin/mlpal --tests train mlpal.tests.base_learning_spec_test'), "make train is failing")
-        self.assertEqual(None, exit_code_of('bin/mlpal --tests search mlpal.tests.base_learning_spec_test'), "make search is failing")
+    SETUP = 'mlpal.tests.base_learning_spec_test'
+
+    def test_BaseLearningSpec_can_be_used_for_training(self):
+        train = 'train  --cv=2'
+        self.assertEqual(None, utils.run_mlpal(train, self.SETUP), "make train is failing")
+
+    def test_BaseLearningSpec_can_be_used_for_searching(self):
+        search = 'search --cv=2'
+        self.assertEqual(None, utils.run_mlpal(search, self.SETUP), "make search is failing")

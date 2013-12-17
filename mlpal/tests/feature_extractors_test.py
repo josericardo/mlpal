@@ -18,13 +18,13 @@ class ColumnExtractorTest(unittest.TestCase):
         expected = [['a'], ['c']]
         self.assertEquals(expected, actual)
 
-    def test_transforms_fetching_only_one_column(self):
+    def test_transforms_fetching_two_columns(self):
         ce = ColumnExtractor(['trecho', 'palavra'])
         actual = ce.transform(X)
         expected = [['a', 'b'], ['c', 'd']]
         self.assertEquals(expected, actual)
 
-    def test_transforms_fetching_only_one_column(self):
+    def test_transforms_fetching_one_attribute_column(self):
         ce = ColumnExtractor(['Child.prop'])
         actual = ce.transform(X)
         expected = [['w'], ['z']]
@@ -50,4 +50,11 @@ class ColsExtractorTest(unittest.TestCase):
             [3, 5]
         ]
 
+        self.assertTrue(np.array_equal(expected, features))
+
+    def test_extracts_and_flattens(self):
+        ce = ColsExtractor([0], flat=True)
+        features = ce.transform(self.X)
+
+        expected = [0, 3]
         self.assertTrue(np.array_equal(expected, features))

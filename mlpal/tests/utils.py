@@ -7,11 +7,11 @@ def exit_code_of(cmd):
     process.read()
     return process.close()
 
-def mlpal(task):
-    cmd = "bin/mlpal --tests %s mlpal.tests.dummy_setup" % (task)
+def mlpal(task, setup):
+    cmd = "MLPAL_TESTS='true' bin/mlpal %s %s" % (task, setup)
     print("\nRunning: %s" % cmd)
     return cmd
 
-def run_mlpal(task):
-    return exit_code_of(mlpal(task))
+def run_mlpal(task, setup='mlpal.tests.dummy_setup'):
+    return exit_code_of(mlpal(task, setup))
 

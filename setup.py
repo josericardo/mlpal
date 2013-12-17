@@ -1,8 +1,10 @@
 from distutils.core import setup
 
+from mlpal.version import __version__
+
 setup(
     name='MLPal',
-    version='0.1.0',
+    version=__version__,
     author='Gendoc',
     author_email='josericardo@gendoc.com.br',
     packages=['mlpal', 'mlpal.tests'],
