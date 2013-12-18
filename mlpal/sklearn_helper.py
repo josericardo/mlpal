@@ -3,12 +3,25 @@
 import numpy as np
 
 class ClassifierAsFeature:
-    """ Helper to use the output of a classifier as a feature """
-    def __init__(self, classifier):
+    """Helper to use the output of a classifier as a feature
+
+    Params
+    ------
+
+    classifier: scikit-learn classifier
+        Its predict_proba method will be used as this object's #transform
+        method
+    trained: bool
+        If False, `classifier#fit` will be called when this object's #fit is
+        called
+    """
+    def __init__(self, classifier, trained=False):
         self.clf = classifier
+        self.trained = trained
 
     def fit(self, X, y=None):
-        self.clf.fit(X, y)
+        if not self.trained:
+            self.clf.fit(X, y)
         return self
 
     def transform(self, X):
@@ -22,10 +35,10 @@ class ClassifierAsFeature:
 
     def get_params(self, deep=True):
         # TODO return the params of all children
-        return {'classifier': self.clf}
+        return {'classifier': self.clf, 'trained': self.trained}
 
     def __repr__(self):
-        return "%s(%s)" % (self.__class__.__name__, repr(self.clf))
+        return "%s(%s)" % (self.__class__.__name__, repr(self.get_params()))
 
 class BaseFeatureExtractor:
     def transform(self, X, y=None):
