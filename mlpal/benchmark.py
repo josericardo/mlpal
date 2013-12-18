@@ -16,7 +16,7 @@ def _benchmark(benchmarker, test_slice):
         X_test, y_test = benchmarker.ds.testing_slice(start, end)
         clf = copy.deepcopy(benchmarker.clf)
         trainer = Trainer(benchmarker.rt, benchmarker.config, benchmarker.ds, clf)
-        return trainer.benchmark(X_test, y_test)
+        return trainer.benchmark(X_test, y_test).confusion_matrix
     except Exception as e:
         print(e)
         traceback.print_exc()

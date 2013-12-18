@@ -2,10 +2,10 @@
 
 import os
 import joblib
+from collections import namedtuple
 import numpy as np
 from datetime import datetime
-from sklearn.metrics import classification_report
-from sklearn.metrics import confusion_matrix
+from sklearn import metrics
 from sklearn import cross_validation
 
 from log_utils import log_confusion_matrix
@@ -35,11 +35,11 @@ class Trainer:
         self.save(self.classifier)
 
         self.log.info("Training evaluation")
-        self.classify_and_report(self.classifier, X_train, y_train)
+        train_score, confusion_matrix = self.classify_and_report(self.classifier, X_train, y_train)
 
         self.log.info("Classifier trained. Computing cv score (%d folds)..." % self.config.cv)
         scores = self._cv_scores(self.classifier, X_train, y_train)
-        self.add_training_info_to_history(scores)
+        self.add_training_info_to_history(train_score, scores)
 
     def _cv_scores(self, clf, X, y):
         scores = cross_validation.cross_val_score(clf, X, y, cv=self.config.cv, scoring=self.config.scoring)
@@ -49,28 +49,33 @@ class Trainer:
 
         return scores
 
-    def add_training_info_to_history(self, scores):
+    def add_training_info_to_history(self, train_score, scores):
         e = self.rt.info
         e['clf'] = self.classifier.__repr__()
         e['cv_scores_mean'] = scores.mean()
         e['cv_scores_std'] = scores.std()
+        e['train_f1_score'] = train_score
 
     def benchmark(self, X_test, y_test):
         return self.classify_and_report(self.classifier, X_test, y_test, print_report=False)
 
-    def classify_and_report(self, clf, X_test, y_test, print_report=True):
-        y_predicted = clf.predict(X_test)
-        return self.get_metrics(y_predicted, y_test, print_report=print_report)
+    def classify_and_report(self, clf, X, y, print_report=True):
+        """returns (f1-score, confusion_matrix)"""
+        y_predicted = clf.predict(X)
 
-    def get_metrics(self, y_predicted, y, print_report):
+        # TODO score according to config.scoring
+        f1 = metrics.f1_score(y, y_predicted)
+        cm = self._get_metrics(y_predicted, y, print_report=print_report)
+        return namedtuple('TrainingResults', ['score', 'confusion_matrix'])(f1, cm)
+
+    def _get_metrics(self, y_predicted, y, print_report):
         self.log.info("Generating metrics")
 
         if print_report:
-            report = classification_report(y, y_predicted)
+            report = metrics.classification_report(y, y_predicted)
             self.log.info("\n" + report)
 
-        # C_{i, j} is equal to the number of observations known to be in group i but predicted to be in group j:\n")
-        cm = confusion_matrix(y, y_predicted)
+        cm = metrics.confusion_matrix(y, y_predicted)
         log_confusion_matrix(self.log, cm)
         return cm
 
