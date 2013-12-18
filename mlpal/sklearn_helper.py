@@ -24,6 +24,9 @@ class ClassifierAsFeature:
         # TODO return the params of all children
         return {'classifier': self.clf}
 
+    def __repr__(self):
+        return "%s(%s)" % (self.__class__.__name__, repr(self.clf))
+
 class BaseFeatureExtractor:
     def transform(self, X, y=None):
         return [self.map(x) for x in X]

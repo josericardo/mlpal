@@ -17,3 +17,7 @@ class ClassifierAsFeatureTest(unittest.TestCase):
 
         pipe.fit(X, y)
         self.assertTrue(len(pipe.predict(X)) > 0)
+
+    def test_it_defines_a_useful_repr(self):
+        clf = ClassifierAsFeature(MultinomialNB())
+        self.assertTrue(repr(clf).index('MultinomialNB') > 0)
