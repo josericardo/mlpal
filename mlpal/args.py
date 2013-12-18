@@ -89,6 +89,10 @@ def add_machine_learning_tasks_to(subparsers, ml_parser, defaults):
             help='Plot the data reduced to 2-dimensions',
             conflict_handler='resolve')
 
+    subparsers.add_parser('peek', parents=[ml_parser],
+            help='A peek at the data that is sent to the classifier.',
+            conflict_handler='resolve')
+
     subparsers.add_parser('misclassified', parents=[ml_parser],
             help='Prints the examples that were misclassified during Cross Validation',
             conflict_handler='resolve')

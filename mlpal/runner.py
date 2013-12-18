@@ -57,6 +57,20 @@ def run_new_setup(rt):
     import new_setup
     new_setup.generate(rt.config.new_setup_id)
 
+def run_peek(rt):
+    X, y = rt.data_source.train_data()
+
+    if not rt.config.d:
+        print("X:")
+        print(X)
+        print("y:")
+        print(y)
+    else:
+        import numpy
+        numpy.set_printoptions(threshold=numpy.nan)
+        print("Now you can play with the X and y variables:")
+        import ipdb; ipdb.set_trace()
+
 class MLPalRuntime:
     pass
 
