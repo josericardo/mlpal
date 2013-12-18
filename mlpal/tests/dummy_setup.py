@@ -32,7 +32,6 @@ class DataSource(BaseDataSource):
         return data[:,:2], data[:,2]
 
     def raw_train(self): return a_dataset
-    def raw_validation(self): return a_dataset
     def raw_test(self): return a_dataset
 
 

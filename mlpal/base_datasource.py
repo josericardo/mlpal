@@ -24,7 +24,6 @@ class BaseDataSource:
         no('Xy')
 
     def raw_train(self): no('raw_train')
-    def raw_validation(self): no('raw_validation')
     def raw_test(self): no('raw_test')
     def slice_for_tests(self, start, end): no('slice_for_tests')
     def get_test_size(self): no('get_test_size')
