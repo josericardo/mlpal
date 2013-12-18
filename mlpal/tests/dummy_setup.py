@@ -28,8 +28,8 @@ class DataSource(BaseDataSource):
     def get_test_size(self):
         return len(a_dataset)
 
-    def raw_to_matrix(self, data):
-        return data
+    def Xy(self, data):
+        return data[:,:2], data[:,2]
 
     def raw_train(self): return a_dataset
     def raw_validation(self): return a_dataset

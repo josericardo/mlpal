@@ -15,13 +15,16 @@ class LearningSpec(BaseLearningSpec):
 
 
 class DataSource(BaseDataSource):
-    def raw_to_matrix(self, data):
-        raise LearningSetupIsBroken('#raw_to_matrix not implemented')
+    def Xy(self, data):
+        # returns X,y
+        raise LearningSetupIsBroken('#Xy not implemented')
 
     def raw_train(self):
+        # return data that Xy understands
         raise LearningSetupIsBroken('#raw_train not implemented')
 
     def raw_test(self):
+        # return data that Xy understands
         raise LearningSetupIsBroken('#raw_test not implemented')
 
     def get_test_size(self):
