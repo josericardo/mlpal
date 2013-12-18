@@ -81,3 +81,6 @@ class ColsExtractor(BaseFeatureExtractor):
             'astype': self.astype,
             'flat': self.flat
         }
+
+    def __repr__(self):
+        return ("%s(%s)" % (self.__class__.__name__, repr(self.get_params())))

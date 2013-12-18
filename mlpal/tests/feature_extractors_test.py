@@ -58,3 +58,10 @@ class ColsExtractorTest(unittest.TestCase):
 
         expected = [0, 3]
         self.assertTrue(np.array_equal(expected, features))
+
+    def test_defines_a_useful_repr(self):
+        ce = ColsExtractor([0], flat=True)
+        self.assertTrue(repr(ce).index('cols') > 0)
+        self.assertTrue(repr(ce).index('astype') > 0)
+        self.assertTrue(repr(ce).index('flat') > 0)
+
