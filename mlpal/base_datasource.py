@@ -20,7 +20,7 @@ class BaseDataSource:
     def testing_slice(self, start, end):
         return self.Xy(self.slice_for_tests(start, end))
 
-    def Xy(self, data):
+    def Xy(self, raw_data):
         no('Xy')
 
     def raw_train(self): no('raw_train')
