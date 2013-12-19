@@ -4,6 +4,7 @@ import os
 from sklearn.dummy import DummyClassifier
 import numpy as np
 import random
+from itertools import izip
 
 from ..base_datasource import BaseDataSource
 
@@ -22,17 +23,18 @@ class DataSource(BaseDataSource):
     def __init__(self, args):
         pass
 
-    def slice_for_tests(self, start, end):
-        return a_dataset
-
-    def get_test_size(self):
-        return len(a_dataset)
-
     def Xy(self, data):
         return data[:,:2], data[:,2]
 
-    def raw_train(self): return a_dataset
-    def raw_test(self): return a_dataset
+    def raw_train(self):
+        return a_dataset
+
+    def raw_test(self):
+        # if you don't want to benchmark in parallel
+        # return a list of one element, eg.: [a_dataset]
+        slice_edges = [0, 100, 200, 300, 400, 500]
+        slices = izip(slice_edges[:-1], slice_edges[1:])
+        return (a_dataset[begin:end] for (begin, end) in slices)
 
 
 class LearningSpec:

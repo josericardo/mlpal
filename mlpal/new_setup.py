@@ -28,14 +28,9 @@ class DataSource(BaseDataSource):
         raise LearningSetupIsBroken('#raw_train not implemented')
 
     def raw_test(self):
-        # return data that Xy understands
+        # return a list of data that Xy understands
+        # see BaseDataSource#raw_test docs
         raise LearningSetupIsBroken('#raw_test not implemented')
-
-    def get_test_size(self):
-        raise LearningSetupIsBroken('#get_test_size not implemented')
-
-    def slice_for_tests(self, start, end):
-        raise LearningSetupIsBroken('#slice_for_tests not implemented')
 """
 
 def generate(setup_id):
