@@ -15,6 +15,10 @@ class LearningSpec(BaseLearningSpec):
 
 
 class DataSource(BaseDataSource):
+
+    def __init__(self, config):
+        pass
+
     def Xy(self, raw_data):
         # returns X,y
         raise LearningSetupIsBroken('#Xy not implemented')
