@@ -9,11 +9,11 @@ from sklearn.cross_validation import ShuffleSplit
 from joblib import Parallel, delayed
 from sklearn.metrics import f1_score
 
-def gen_output(args, out):
+def gen_output(config, out):
     out_prefix = 'learning_curves'
 
-    if args.o:
-        out_prefix = args.o
+    if config.o:
+        out_prefix = config.o
 
     out_png = '%s_lcs.png' % out_prefix
     pl.savefig(out_png)
@@ -21,17 +21,17 @@ def gen_output(args, out):
     with open("%s_lcs.scores" % out_prefix, "w") as f:
         f.write(out)
 
-def train_sizes_from(n_samples, args):
+def train_sizes_from(n_samples, config):
     gen_space = np.logspace
-    begin = math.log10(args.begin)
+    begin = math.log10(config.begin)
     end = math.log10(n_samples)
 
-    if args.space == 'linear':
+    if config.space == 'linear':
         gen_space = np.linspace
-        begin = args.begin
+        begin = config.begin
         end = n_samples
 
-    return gen_space(begin, end, args.points).astype(np.int)
+    return gen_space(begin, end, config.points).astype(np.int)
 
 def fit(spec, X, y, train, test, i, j):
     clf = spec.training_classifier()
@@ -42,19 +42,19 @@ def fit(spec, X, y, train, test, i, j):
     # TODO read config.score
     return f1_score(y_train, clf.predict(X_train)), f1_score(y_test, clf.predict(X_test))
 
-def plot_lcs(spec, X, y, args, X_test=None, y_test=None):
-    train_sizes = train_sizes_from(len(X), args)
-    train_scores = np.zeros((train_sizes.shape[0], args.cv), dtype=np.float)
-    test_scores = np.zeros((train_sizes.shape[0], args.cv), dtype=np.float)
+def plot_lcs(spec, X, y, config, X_test=None, y_test=None):
+    train_sizes = train_sizes_from(len(X), config)
+    train_scores = np.zeros((train_sizes.shape[0], config.cv), dtype=np.float)
+    test_scores = np.zeros((train_sizes.shape[0], config.cv), dtype=np.float)
     clfs = {}
 
     len_of_max_train_size_number = len(str(train_sizes[-1]))
 
     out = ''
     for i, train_size in enumerate(train_sizes):
-        cv = ShuffleSplit(train_size, n_iter=args.cv)
+        cv = ShuffleSplit(train_size, n_iter=config.cv)
 
-        i_scores = Parallel(n_jobs=args.j, pre_dispatch=1, verbose=1)(
+        i_scores = Parallel(n_jobs=config.j, pre_dispatch=1, verbose=1)(
                 delayed(fit)
                 (spec, X, y, train, test, i, j)
                 for j, (train, test) in enumerate(cv)
@@ -91,5 +91,5 @@ def plot_lcs(spec, X, y, args, X_test=None, y_test=None):
     pl.legend(loc='best')
     pl.title('Main train and test scores +/- 2 standard errors')
 
-    gen_output(args, out)
+    gen_output(config, out)
     return clfs
