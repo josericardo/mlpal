@@ -6,7 +6,7 @@ import traceback
 import math
 from joblib import Parallel, delayed
 from train import Trainer
-from log_utils import log_confusion_matrix
+import log_utils
 import logger_factory
 
 BenchmarkParams = namedtuple('BenchmarkParams', ['rt', 'ds', 'config', 'clf'])
@@ -23,34 +23,36 @@ def _benchmark(params, test_slice):
         print(e)
         traceback.print_exc()
 
-def benchmark(rt, config, ds, clf):
+def _slice(length, wanted_parts=1):
+    return [(i*length // wanted_parts, (i+1)*length // wanted_parts)
+            for i in range(wanted_parts)]
+
+def _merge_confusion_matrices(cms):
+    merged = [[0,0], [0,0]]
+
+    for cm in cms:
+        merged[0][0] += cm[0][0]
+        merged[0][1] += cm[0][1]
+        merged[1][0] += cm[1][0]
+        merged[1][1] += cm[1][1]
+
+    return merged
+
+def benchmark_and_log(rt, config, ds, clf):
     """Slices the test set and generates the final confusion matrix"""
     def run():
         test_size = ds.get_test_size()
         num_of_chunks = int(math.ceil(test_size/70000.0)) # is 70k good enough?
-        test_subsets = slices(test_size, wanted_parts=num_of_chunks)
+        test_subsets = _slice(test_size, wanted_parts=num_of_chunks)
 
         print("Benchmarking classifier over %d examples in %d chunks." % (test_size, num_of_chunks))
 
         params = BenchmarkParams(rt, ds, config, clf)
         cms = Parallel(n_jobs=config.j, verbose=1)(
                 delayed(_benchmark)(params, i) for i in test_subsets)
-        log_final_confusion_matrix(cms)
 
-    def slices(length, wanted_parts=1):
-        return [(i*length // wanted_parts, (i+1)*length // wanted_parts)
-                for i in range(wanted_parts)]
+        return _merge_confusion_matrices(cms)
 
-    def log_final_confusion_matrix( cms):
-        final_confusion_matrix = [[0,0], [0,0]]
-
-        for cm in cms:
-            final_confusion_matrix[0][0] += cm[0][0]
-            final_confusion_matrix[0][1] += cm[0][1]
-            final_confusion_matrix[1][0] += cm[1][0]
-            final_confusion_matrix[1][1] += cm[1][1]
-
-        log_confusion_matrix(log, final_confusion_matrix)
-
+    benchmark_confusion_matrix = run()
     log = logger_factory.logger_for(config, 'Benchmarker')
-    run()
+    log_utils.log_confusion_matrix(log, benchmark_confusion_matrix)
