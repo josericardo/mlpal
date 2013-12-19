@@ -8,7 +8,7 @@ from sklearn.pipeline import Pipeline
 
 from train import Trainer
 from search import Searcher
-from benchmark import Benchmarker
+from benchmark import benchmark
 from misclassified import print_misclassified
 from learning_curves import plot_lcs
 from pca import plot_pca
@@ -26,8 +26,7 @@ def run_benchmark(rt):
     classifier = joblib.load(args.clfpath)
     # check if the user has not defined one?
     args.log_to = 'benchmark.log'
-    benchmarker = Benchmarker(rt, args, rt.data_source, classifier)
-    benchmarker.run()
+    benchmark(rt, args, rt.data_source, classifier)
 
 def run_plot_pca(rt):
     X, y = rt.data_source.train_data()
