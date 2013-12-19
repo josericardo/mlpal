@@ -38,6 +38,8 @@ def fit(spec, X, y, train, test, i, j):
     X_train, y_train = X[train], y[train]
     X_test, y_test = X[test], y[test]
     clf.fit(X_train, y_train)
+
+    # TODO read config.score
     return f1_score(y_train, clf.predict(X_train)), f1_score(y_test, clf.predict(X_test))
 
 def plot_lcs(spec, X, y, args, X_test=None, y_test=None):
