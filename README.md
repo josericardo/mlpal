@@ -16,7 +16,10 @@ Implement two interfaces and start experimenting.
 
 To install the package locally:
 
-`$ make install`
+```
+$ pip install -r requirements.txt
+$ make install
+```
 
 Using:
 
