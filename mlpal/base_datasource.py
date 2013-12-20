@@ -13,6 +13,7 @@ class BaseDataSource:
     """ DataSource interface, all code should interact only with these methods """
     def __init__(self, args):
         pass
+
     def train_data(self):
         """
         Train set accessor
