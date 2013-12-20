@@ -14,18 +14,58 @@ class BaseDataSource:
     def __init__(self, args):
         pass
     def train_data(self):
+        """
+        Train set accessor
+
+        Returns
+        -------
+        (X, y): tuple
+        """
         return self.Xy(self.raw_train())
 
     def test_data(self):
-        return self.Xy(self.raw_test())
+        """
+        Test set accessor
 
-    def testing_slice(self, start, end):
-        return self.Xy(self.slice_for_tests(start, end))
+        Returns
+        -------
+        iterator
+            (X, y) tuples iterator
+        """
+        return (self.Xy(subset) for subset in self.raw_test())
 
     def Xy(self, raw_data):
+        """
+        Converts raw data into X and y that can be used by the scikit-learn
+        classes.
+
+        Returns
+        -------
+        (X, y): tuple
+        """
         no('Xy')
 
-    def raw_train(self): no('raw_train')
-    def raw_test(self): no('raw_test')
-    def slice_for_tests(self, start, end): no('slice_for_tests')
-    def get_test_size(self): no('get_test_size')
+    def raw_train(self):
+        """
+        Raw train set accessor
+
+        Returns
+        -------
+        train set
+            data in a format that self#Xy understands
+        """
+        no('raw_train')
+
+    def raw_test(self):
+        """
+        Raw test set accessor
+
+        Returns
+        -------
+        raw test set iterator
+            the benchmark will evaluate each subset (item in the iterator)
+            in parallel.
+            Important: each element must be in the format that
+            self#Xy understands
+        """
+        no('raw_test')

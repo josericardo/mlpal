@@ -11,11 +11,10 @@ import logger_factory
 
 BenchmarkParams = namedtuple('BenchmarkParams', ['rt', 'ds', 'config', 'clf'])
 
-def _benchmark(params, test_slice):
+def _benchmark(params, test_subset):
     """Benchmarks the classifier based on a test set slice"""
     try:
-        (start, end) = test_slice
-        X_test, y_test = params.ds.testing_slice(start, end)
+        X_test, y_test = test_subset
         clf = copy.deepcopy(params.clf)
         trainer = Trainer(params.rt, params.config, params.ds, params.clf)
         return trainer.benchmark(X_test, y_test).confusion_matrix
@@ -23,14 +22,10 @@ def _benchmark(params, test_slice):
         print(e)
         traceback.print_exc()
 
-def _slice(length, wanted_parts=1):
-    return [(i*length // wanted_parts, (i+1)*length // wanted_parts)
-            for i in range(wanted_parts)]
-
-def _merge_confusion_matrices(cms):
+def _merge_confusion_matrices(cms_list):
     merged = [[0,0], [0,0]]
 
-    for cm in cms:
+    for cm in cms_list:
         merged[0][0] += cm[0][0]
         merged[0][1] += cm[0][1]
         merged[1][0] += cm[1][0]
@@ -41,18 +36,12 @@ def _merge_confusion_matrices(cms):
 def benchmark_and_log(rt, config, ds, clf):
     """Slices the test set and generates the final confusion matrix"""
     def run():
-        test_size = ds.get_test_size()
-        num_of_chunks = int(math.ceil(test_size/70000.0)) # is 70k good enough?
-        test_subsets = _slice(test_size, wanted_parts=num_of_chunks)
-
-        print("Benchmarking classifier over %d examples in %d chunks." % (test_size, num_of_chunks))
-
+        test_subsets = ds.test_data()
         params = BenchmarkParams(rt, ds, config, clf)
         cms = Parallel(n_jobs=config.j, verbose=1)(
-                delayed(_benchmark)(params, i) for i in test_subsets)
-
+                delayed(_benchmark)(params, subset) for subset in test_subsets)
         return _merge_confusion_matrices(cms)
 
     benchmark_confusion_matrix = run()
-    log = logger_factory.logger_for(config, 'Benchmarker')
+    log = logger_factory.logger_for(config, 'benchmark')
     log_utils.log_confusion_matrix(log, benchmark_confusion_matrix)

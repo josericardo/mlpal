@@ -14,7 +14,6 @@ from learning_curves import plot_lcs
 from pca import plot_pca
 from history import History
 from importlib import import_module
-from config import Config
 
 def run_learning_curves(rt):
     X, y = rt.data_source.train_data()
