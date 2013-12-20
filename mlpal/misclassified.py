@@ -32,11 +32,17 @@ def _print(data):
     for x in data['X']:
         print("%s | %s\n============\n" % (data['id'], x[0]))
 
-def _print_errors(errors):
+def _print_errors(config, errors):
     false_pos, false_neg = errors[(0, 1)], errors[(1, 0)]
 
-    _print({'id': 'FN', 'class': 'False Negatives', 'X': false_neg})
-    _print({'id': 'FP', 'class': 'False Positives', 'X': false_pos})
+    if config.d:
+        import numpy
+        numpy.set_printoptions(threshold=numpy.nan)
+        print("Now you can play with the false_pos and false_neg variables:")
+        import ipdb; ipdb.set_trace()
+    else:
+        _print({'id': 'FN', 'class': 'False Negatives', 'X': false_neg})
+        _print({'id': 'FP', 'class': 'False Positives', 'X': false_pos})
 
 def _load_previous_classification(config):
     if config.f:
@@ -54,7 +60,7 @@ def print_misclassified(config, clf, data_source):
     if not errors:
         errors = classify(config, clf, data_source)
 
-    _print_errors(errors)
+    _print_errors(config, errors)
 
 def classify(config, clf, data_source):
     X, y = data_source.train_data()
