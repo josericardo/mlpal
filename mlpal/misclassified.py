@@ -26,13 +26,20 @@ def find_errors(clf, X, y, splits):
 
     return {(0, 1): false_positives, (1, 0): false_negatives}
 
-def _print(data):
-    print("%d %s" % (len(data['X']), data['class']))
+def _cols_str_to_list(cols):
+    if not cols:
+        return cols
 
-    for x in data['X']:
-        print("%s | %s\n============\n" % (data['id'], x[0]))
+    return [int(c) for c in cols.split(',')]
 
 def _print_errors(config, errors):
+    def _p(data):
+        print("%d %s" % (len(data['X']), data['class']))
+        cols = _cols_str_to_list(config.cols)
+
+        for x in data['X']:
+            print("%s | %s\n============\n" % (data['id'], x[cols]))
+
     false_pos, false_neg = errors[(0, 1)], errors[(1, 0)]
 
     if config.d:
@@ -41,8 +48,8 @@ def _print_errors(config, errors):
         print("Now you can play with the false_pos and false_neg variables:")
         import ipdb; ipdb.set_trace()
     else:
-        _print({'id': 'FN', 'class': 'False Negatives', 'X': false_neg})
-        _print({'id': 'FP', 'class': 'False Positives', 'X': false_pos})
+        _p({'id': 'FN', 'class': 'False Negatives', 'X': false_neg})
+        _p({'id': 'FP', 'class': 'False Positives', 'X': false_pos})
 
 def _load_previous_classification(config):
     if config.f:

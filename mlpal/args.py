@@ -93,9 +93,12 @@ def add_machine_learning_tasks_to(subparsers, ml_parser, defaults):
             help='A peek at the data that is sent to the classifier.',
             conflict_handler='resolve')
 
-    subparsers.add_parser('misclassified', parents=[ml_parser],
+    misclassified_parser = subparsers.add_parser('misclassified', parents=[ml_parser],
             help='Prints the examples that were misclassified during Cross Validation',
             conflict_handler='resolve')
+
+    misclassified_parser.add_argument("--cols", type=str, default=defaults.get('cols'),
+            help="List of X cols to display. Eg.: '1,2,4' or '2'")
 
     train_search_parser = argparse.ArgumentParser(parents=[ml_parser], conflict_handler='resolve')
 
