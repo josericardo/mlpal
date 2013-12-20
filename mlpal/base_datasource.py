@@ -42,6 +42,7 @@ class BaseDataSource:
         Returns
         -------
         (X, y): tuple
+            X and y must be numpy arrays
         """
         no('Xy')
 
