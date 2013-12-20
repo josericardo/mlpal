@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from train import Trainer
-from config import Config
 from sklearn.cross_validation import StratifiedShuffleSplit
 from sklearn.grid_search import GridSearchCV
 import logger_factory
