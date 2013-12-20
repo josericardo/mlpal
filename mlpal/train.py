@@ -29,19 +29,18 @@ class Trainer:
         self.config = config
 
     def run(self):
-        self.log.info("Extracting features and labels for training")
+        self.log.info("Extracting features and labels for training.")
         X_train, y_train = self.ds.train_data()
+        self.log.info("Data loaded, fitting classifier.")
 
         self.classifier.fit(X_train, y_train)
+        self.log.info("Classifier trained.")
         self.save(self.classifier)
 
-        self.log.info("Training evaluation")
+        self.log.info("Evaluating classifier on the training data.")
         train_score, confusion_matrix = self.classify_and_report(self.classifier, X_train, y_train)
 
-        self.log.info(
-            "Classifier trained."
-            "Computing cv score (%d folds)..." % self.config.cv)
-
+        self.log.info("Computing cv score (%d folds)..." % self.config.cv)
         scores = self._cv_scores(self.classifier, X_train, y_train)
         self.add_training_info_to_history(train_score, scores)
 
@@ -52,7 +51,6 @@ class Trainer:
             % (self.config.scoring, scores.mean(), scores.std() * 2))
 
         return scores
-
 
     def add_training_info_to_history(self, train_score, scores):
         e = self.rt.info
